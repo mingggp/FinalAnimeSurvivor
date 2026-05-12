@@ -106,6 +106,8 @@ public class SettingCanvas extends VBox {
         b.setStyle(BTN_NORMAL);
         b.setOnMouseEntered(e -> b.setStyle(BTN_HOVER));
         b.setOnMouseExited(e -> b.setStyle(BTN_NORMAL));
+        b.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED,
+            e -> SoundManager.getInstance().playSFX(SoundManager.SFX_UI_CLICK));
         return b;
     }
 

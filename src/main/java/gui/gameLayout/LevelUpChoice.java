@@ -16,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import utils.SceneManager;
+import utils.SoundManager;
 
 public class LevelUpChoice extends VBox {
 
@@ -62,19 +63,19 @@ public class LevelUpChoice extends VBox {
         styleCard(choice1, icon1);
         styleCard(choice2, icon2);
 
-        choice0.setOnMouseClicked(e -> choice0Handler());
+        choice0.setOnMouseClicked(e -> { SoundManager.getInstance().playSFX(SoundManager.SFX_UI_CLICK); choice0Handler(); });
         choice0.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.SPACE) choice0Handler();
             if (e.getCode() == KeyCode.W) choice2.requestFocus();
             if (e.getCode() == KeyCode.S) choice1.requestFocus();
         });
-        choice1.setOnMouseClicked(e -> choice1Handler());
+        choice1.setOnMouseClicked(e -> { SoundManager.getInstance().playSFX(SoundManager.SFX_UI_CLICK); choice1Handler(); });
         choice1.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.SPACE) choice1Handler();
             if (e.getCode() == KeyCode.W) choice0.requestFocus();
             if (e.getCode() == KeyCode.S) choice2.requestFocus();
         });
-        choice2.setOnMouseClicked(e -> choice2Handler());
+        choice2.setOnMouseClicked(e -> { SoundManager.getInstance().playSFX(SoundManager.SFX_UI_CLICK); choice2Handler(); });
         choice2.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.SPACE) choice2Handler();
             if (e.getCode() == KeyCode.W) choice1.requestFocus();

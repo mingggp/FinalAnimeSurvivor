@@ -13,6 +13,7 @@ import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import utils.SoundManager;
 
 import java.util.Objects;
 
@@ -99,6 +100,7 @@ public class Infinity extends Weapon implements Evolvable, DamageIncreasable, Si
         this.setMapY(gameManager.getCharacter().getMapY());
         if(timeSinceUse<duration && timeSinceLastHit > hitInterval) {
             timeSinceLastHit =0;
+            SoundManager.getInstance().playSFX(SoundManager.SFX_GOJO_ATK);
             for (Enemy enemy : gameManager.getInGameEnemyList()) {
                 if (((enemy.getMapX()-this.getMapX())*
                      (enemy.getMapX()-this.getMapX())+

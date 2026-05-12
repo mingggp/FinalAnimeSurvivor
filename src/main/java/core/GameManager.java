@@ -470,6 +470,7 @@ public class GameManager {
                 if (character.getHitbox().intersects(expOrb.getHitbox())) {
                     currentExperience += (int) (expOrb.getXpAmount()*xPMultiplier);
                     droppedExpOrbListIterator.remove();
+                    SoundManager.getInstance().playSFX(SoundManager.SFX_EXP_PICKUP);
                 } else {
                     expOrb.update(accumulateDeltaTime);
                 }
@@ -534,6 +535,7 @@ public class GameManager {
             //this.weaponList[0].setLevel(Integer.parseInt(weaponList[0].getLevel()) + 1);
             this.ExperienceForNextLevel = level*10;
             this.currentState = GameState.LEVEL_UP;
+            SoundManager.getInstance().playSFX(SoundManager.SFX_LEVEL_UP);
             getRandomLevelUpChoice();
             //SceneManager.updateLevelUpChoice();
             //SceneManager.showLevelUpChoice();

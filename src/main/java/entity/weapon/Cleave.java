@@ -14,6 +14,7 @@ import entityInterface.weaponInterface.Evolvable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import utils.SoundManager;
 import vfx.VFXManager;
 
 import java.util.Objects;
@@ -104,6 +105,7 @@ public class Cleave extends Weapon implements Evolvable, DamageIncreasable {
 
                     enemy.takeDamage(damage, 0.02, 0, Color.BLACK);
                     VFXManager.spawnSlash(enemy.getMapX(), enemy.getMapY(), size,true);
+                    SoundManager.getInstance().playSFX(SoundManager.SFX_SUKUNA_ATK);
                     haveTarget = true;
                 }
 

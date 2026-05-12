@@ -15,6 +15,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import utils.SceneManager;
+import utils.SoundManager;
 
 public class MenuCanvas extends VBox {
 
@@ -91,6 +92,8 @@ public class MenuCanvas extends VBox {
         b.setStyle(BTN_NORMAL);
         b.setOnMouseEntered(e -> b.setStyle(BTN_HOVER));
         b.setOnMouseExited(e -> b.setStyle(BTN_NORMAL));
+        b.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED,
+            e -> SoundManager.getInstance().playSFX(SoundManager.SFX_UI_CLICK));
         return b;
     }
 }

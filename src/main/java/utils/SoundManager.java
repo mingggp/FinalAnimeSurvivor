@@ -68,6 +68,13 @@ public class SoundManager {
      * <p>Must be called once during application startup (after the JavaFX
      * toolkit is initialised) before any BGM can be played.
      */
+    // ── SFX path constants ───────────────────────────────────────────────────
+    public static final String SFX_UI_CLICK     = "/sfx/ui_click.wav";
+    public static final String SFX_EXP_PICKUP   = "/sfx/exp_pickup.wav";
+    public static final String SFX_LEVEL_UP     = "/sfx/level_up.wav";
+    public static final String SFX_SUKUNA_ATK   = "/sfx/sukuna_attack.wav";
+    public static final String SFX_GOJO_ATK     = "/sfx/gojo_attack.wav";
+
     public void loadSounds() {
         Media bgm1 = loadMedia("/bgm/aonosumika.mp3");
         if (bgm1 != null) soundLibrary.put("BGM1", bgm1);
@@ -166,4 +173,22 @@ public class SoundManager {
 
     /** Returns the current master volume in [0.0, 1.0]. */
     public double getVolume() { return volume; }
+
+    /**
+     * Plays a one-shot sound effect from a classpath resource path.
+     * A disposable {@link MediaPlayer} is created per call and disposed after playback.
+     *
+     * @param resourcePath absolute classpath path (e.g. {@code "/sfx/ui_click.wav"})
+     */
+    public void playSFX(String resourcePath) {
+        URL url = getClass().getResource(resourcePath);
+        if (url == null) {
+            System.err.println("[SoundManager] SFX resource not found: " + resourcePath);
+            return;
+        }
+        MediaPlayer sfx = new MediaPlayer(new Media(url.toExternalForm()));
+        sfx.setVolume(volume);
+        sfx.play();
+        sfx.setOnEndOfMedia(sfx::dispose);
+    }
 }
