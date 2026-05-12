@@ -39,8 +39,8 @@ public class Red extends Weapon implements Evolvable, DamageIncreasable, SizeInc
     public Red(GameManager gameManager){
         super("Reversal Red", 8, 3);
         this.gameManager = gameManager;
-        this.sprite = new Image("weapon/asset/reversal.png");
-        this.setIcon(new Image("weapon/icon/red.png"));
+        this.sprite = utils.SpriteManager.loadImage("weapon/asset/reversal.png");
+        this.setIcon(utils.SpriteManager.loadImage("weapon/icon/red.png"));
         timeSinceUse = this.getCooldown();
         animationTime=0;
         damage = 20;

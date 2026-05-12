@@ -17,7 +17,7 @@ public class KeyPad extends Accessory{
     public KeyPad(GameManager gameManager){
         super("Wooting",5);
         this.gameManager = gameManager;
-        this.setIcon(new Image("accessory/icon/keypad.png"));
+        this.setIcon(utils.SpriteManager.loadImage("accessory/icon/keypad.png"));
     }
 
     @Override

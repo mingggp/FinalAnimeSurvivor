@@ -31,8 +31,8 @@ public class MaximumRed extends Weapon implements CooldownDecreasable, DamageInc
     public MaximumRed(GameManager gameManager) {
         super("Maximum Red", 1, 45);
         this.gameManager = gameManager;
-        this.sprite = new Image("weapon/asset/MaximumRed.png");
-        this.setIcon(new Image("weapon/icon/maximumRedIcon.png"));
+        this.sprite = utils.SpriteManager.loadImage("weapon/asset/MaximumRed.png");
+        this.setIcon(utils.SpriteManager.loadImage("weapon/icon/maximumRedIcon.png"));
         timeSinceUse = this.getCooldown();
         damage = 15;
         duration = 10;

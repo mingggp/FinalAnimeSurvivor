@@ -9,7 +9,7 @@ public class Bible extends Weapon{
 
     public Bible(GameManager gameManager){
         super("bible",8,1);
-        this.setIcon(new Image("weapon/icon/bible.png"));
+        this.setIcon(utils.SpriteManager.loadImage("weapon/icon/bible.png"));
     }
 
     @Override

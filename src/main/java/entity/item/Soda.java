@@ -21,7 +21,7 @@ public class Soda extends Item implements Usable, Droppable , Updatable {
         super("soda");
         this.setAmount(1);
         this.gameManager = gameManager;
-        this.setIcon( new Image("item/icon/" + this.getName() +".png"));
+        this.setIcon( utils.SpriteManager.loadImage("item/icon/" + this.getName() +".png"));
         usageTime = -10.0;
         this.cooldown = 3;
     }

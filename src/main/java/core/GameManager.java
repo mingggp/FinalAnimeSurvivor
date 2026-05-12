@@ -455,9 +455,9 @@ public class GameManager {
     }
     private void initializeAllCharacter(){
         allCharacterList = new Character[16];
-        Character character1 = new Character( "sukuna", 300,  1000,256,new Cleave(this),new Image("character/icon/sukunaIcon.png"),new Image("character/sprite/sukuna.png"));
+        Character character1 = new Character( "sukuna", 300,  1000,256,new Cleave(this),utils.SpriteManager.loadImage("character/icon/sukunaIcon.png"),utils.SpriteManager.loadImage("character/sprite/sukuna.png"));
         allCharacterList[0] = character1;
-        Character character2 = new Character( "gojo", 300,  1000,256,new Infinity(  this),new Image("character/icon/gojoIcon.png"),new Image("character/sprite/gojo.png"));
+        Character character2 = new Character( "gojo", 300,  1000,256,new Infinity(  this),utils.SpriteManager.loadImage("character/icon/gojoIcon.png"),utils.SpriteManager.loadImage("character/sprite/gojo.png"));
         allCharacterList[1] = character2;
     }
 

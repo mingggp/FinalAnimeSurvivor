@@ -25,7 +25,7 @@ public class Harvest extends Item implements Usable, Updatable , Droppable {
         super("harvest");
         this.setAmount(1);
         this.gameManager = gameManager;
-        this.setIcon( new Image("item/icon/" + this.getName() +".png"));
+        this.setIcon( utils.SpriteManager.loadImage("item/icon/" + this.getName() +".png"));
         usageTime = -10.0;
         this.duration = 5;
         this.cooldown = 5;

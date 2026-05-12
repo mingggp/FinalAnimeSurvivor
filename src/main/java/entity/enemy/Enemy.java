@@ -34,7 +34,7 @@ public class Enemy extends Entity {
         this.setCurrentHP(maxHP);
         this.collisionOn = true;
         this.movable = true;
-        this.setSprite( new Image(name + ".png"));
+        this.setSprite( utils.SpriteManager.loadImage(name + ".png"));
     }
     // Overloaded Constructor for spawner
     public Enemy(Enemy enemy,double mapX,double mapY){

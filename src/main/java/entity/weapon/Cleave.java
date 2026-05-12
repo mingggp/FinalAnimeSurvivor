@@ -32,8 +32,8 @@ public class Cleave extends Weapon implements Evolvable , DamageIncreasable {
 
     public Cleave(GameManager gameManager){
         super("Cleave",8,0);
-        this.setIcon(new Image("weapon/icon/cleave.png"));
-        this.sprite = (new Image("weapon/asset/blackSlash.png"));
+        this.setIcon(utils.SpriteManager.loadImage("weapon/icon/cleave.png"));
+        this.sprite = (utils.SpriteManager.loadImage("weapon/asset/blackSlash.png"));
         this.gameManager = gameManager;
         timeSinceUse = 10;
         size = 288;

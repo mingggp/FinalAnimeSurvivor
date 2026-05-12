@@ -19,7 +19,7 @@ public class SukunaArm extends Accessory{
     public SukunaArm(GameManager gameManager){
         super("Sukuna's Arm",5);
         this.gameManager=gameManager;
-        this.setIcon(new Image("accessory/icon/sukunaArm.png"));
+        this.setIcon(utils.SpriteManager.loadImage("accessory/icon/sukunaArm.png"));
     }
 
     @Override

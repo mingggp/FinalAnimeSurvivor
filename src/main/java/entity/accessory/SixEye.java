@@ -17,7 +17,7 @@ public class SixEye extends Accessory{
 
     public SixEye(GameManager gameManager){
         super("Rikugan",5);
-        this.setIcon(new Image("accessory/icon/sixeye.png"));
+        this.setIcon(utils.SpriteManager.loadImage("accessory/icon/sixeye.png"));
         this.gameManager = gameManager;
         weaponTrackingHashMap = new HashMap<>();
     }
@@ -26,7 +26,7 @@ public class SixEye extends Accessory{
     public void procEffect() {
         for (Weapon weapon : gameManager.getWeaponList()){
             if(weapon==null){
-                break;
+                continue;
             }
             if(weapon instanceof SizeIncreasable sizeIncreasable){
                 if( weaponTrackingHashMap.containsKey(weapon)){

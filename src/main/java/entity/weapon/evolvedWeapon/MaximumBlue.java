@@ -37,8 +37,8 @@ public class MaximumBlue extends Weapon implements SizeIncreasable , DurationInc
     public MaximumBlue(GameManager gameManager) {
         super("Maximum Blue", 1, 4);
         this.gameManager = gameManager;
-        this.sprite = new Image("weapon/asset/MaximumBlue.png");
-        this.setIcon(new Image("weapon/icon/maximumBlueIcon.png"));
+        this.sprite = utils.SpriteManager.loadImage("weapon/asset/MaximumBlue.png");
+        this.setIcon(utils.SpriteManager.loadImage("weapon/icon/maximumBlueIcon.png"));
         timeSinceUse = this.getCooldown();
         damage = 20;
         duration = 8;

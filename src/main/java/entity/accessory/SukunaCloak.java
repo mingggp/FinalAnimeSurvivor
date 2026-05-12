@@ -16,7 +16,7 @@ public class SukunaCloak extends Accessory {
     public SukunaCloak(GameManager gameManager){
         super("Sukuna's Cloak",5);
         this.gameManager=gameManager;
-        this.setIcon(new Image("accessory/icon/sukunaCloak.png"));
+        this.setIcon(utils.SpriteManager.loadImage("accessory/icon/sukunaCloak.png"));
         amountOfTimeGrowthGotMultiply=0;
     }
 

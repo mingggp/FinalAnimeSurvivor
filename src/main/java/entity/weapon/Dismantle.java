@@ -37,8 +37,8 @@ public class Dismantle extends Weapon implements Evolvable, DamageIncreasable, S
     //for all weapon list
     public Dismantle(GameManager gameManager){
         super("Dismantle",8,3);
-        sprite = new Image("weapon/asset/dismantle.png");
-        this.setIcon(new Image("weapon/icon/dismantle.png"));
+        sprite = utils.SpriteManager.loadImage("weapon/asset/dismantle.png");
+        this.setIcon(utils.SpriteManager.loadImage("weapon/icon/dismantle.png"));
         this.gameManager = gameManager;
         this.speed = 1000;
         timeSinceUse = 0;

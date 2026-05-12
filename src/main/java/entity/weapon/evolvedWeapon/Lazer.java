@@ -33,8 +33,8 @@ public class Lazer extends Weapon implements SizeIncreasable , DurationIncreasab
     public Lazer(GameManager gameManager,Standard standard){
         super("Lazer",1,10);
         this.gameManager = gameManager;
-        this.setIcon(new Image("weapon/icon/Lazer.png"));
-        this.sprite = new Image("weapon/asset/mania3.png");
+        this.setIcon(utils.SpriteManager.loadImage("weapon/icon/Lazer.png"));
+        this.sprite = utils.SpriteManager.loadImage("weapon/asset/mania3.png");
         timeSinceUse = this.getCooldown();
         width = 64*4;
         height = 64*7;
@@ -64,12 +64,15 @@ public class Lazer extends Weapon implements SizeIncreasable , DurationIncreasab
     public void use(double accumulateDeltaTime) {
         timeSinceUse+=accumulateDeltaTime;
         if(timeSinceUse >= this.getCooldown()) {
-            timeSinceUse =0;
-            Lazer lazer = new Lazer(this);
-            lazer.setMapX(gameManager.getClosestTarget().getMapX());
-            lazer.setMapY(gameManager.getClosestTarget().getMapY());
-            lazer.hitbox = new BoundingBox(lazer.getMapX()-width/2,lazer.getMapY()-height/2,width,height);
-            gameManager.getUsingWeaponList().add(lazer);
+            entity.enemy.Enemy target = gameManager.getClosestTarget();
+            if (target != null) {
+                timeSinceUse =0;
+                Lazer lazer = new Lazer(this);
+                lazer.setMapX(target.getMapX());
+                lazer.setMapY(target.getMapY());
+                lazer.hitbox = new BoundingBox(lazer.getMapX()-width/2,lazer.getMapY()-height/2,width,height);
+                gameManager.getUsingWeaponList().add(lazer);
+            }
         }
         standard.use(accumulateDeltaTime);
     }

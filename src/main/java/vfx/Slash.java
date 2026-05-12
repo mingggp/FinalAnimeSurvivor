@@ -12,8 +12,8 @@ public class Slash {
     private double age;
     private int size;
     private double angle;
-    private static final Image whiteSlash = new Image("weapon/asset/whiteSlash.png");
-    private static final Image blackSlash = new Image("weapon/asset/blackSlash.png");
+    private static final Image whiteSlash = utils.SpriteManager.loadImage("weapon/asset/whiteSlash.png");
+    private static final Image blackSlash = utils.SpriteManager.loadImage("weapon/asset/blackSlash.png");
     private static int i = 0;
     private Image sprite;
 

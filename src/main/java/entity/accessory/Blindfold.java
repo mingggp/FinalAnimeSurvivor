@@ -16,7 +16,7 @@ public class Blindfold extends Accessory{
     public Blindfold(GameManager gameManager){
         super("Gojo's Blindfold",5);
         this.gameManager = gameManager;
-        this.setIcon(new Image("accessory/icon/gojoblindfold.png"));
+        this.setIcon(utils.SpriteManager.loadImage("accessory/icon/gojoblindfold.png"));
         amountOfTimeMagnetRadiusGotMultiply=0;
     }
 

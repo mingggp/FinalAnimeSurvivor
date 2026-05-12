@@ -17,8 +17,8 @@ public class Chest extends Entity {
     public Chest(GameManager gameManager){
         this.gameManager=gameManager;
         try {
-            this.sprite = new Image("item/chest.png");
-            this.sprite2 = new Image("arrow.png");
+            this.sprite = utils.SpriteManager.loadImage("item/chest.png");
+            this.sprite2 = utils.SpriteManager.loadImage("arrow.png");
         } catch (Exception e) {
             this.sprite = null;
             this.sprite2 = null;

@@ -36,12 +36,12 @@ public class MalevolentKitchen extends Item implements Usable , Renderable , Upd
 
     public MalevolentKitchen(GameManager gameManager) {
         super("Malevolent Kitchen");
-        this.setIcon( new Image("item/icon/malevolentKitchen.png"));
-        this.popUp = new Image("SHRINE4.png");
+        this.setIcon( utils.SpriteManager.loadImage("item/icon/malevolentKitchen.png"));
+        this.popUp = utils.SpriteManager.loadImage("SHRINE4.png");
         this.gameManager = gameManager;
         this.duration = 30;
         this.cooldown = 60;
-        this.sprite = new Image("shrine.png");
+        this.sprite = utils.SpriteManager.loadImage("shrine.png");
     }
    @Override
     public void use(int slot) {

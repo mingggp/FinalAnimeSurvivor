@@ -27,8 +27,8 @@ public class MaximumOutputInfinity extends Weapon implements SizeIncreasable, Da
     public MaximumOutputInfinity(GameManager gameManager) {
         super("Maximum Infinity", 1, 0);
         this.gameManager = gameManager;
-        this.setIcon(new Image("weapon/icon/maximumInfinityIcon.png"));
-        this.sprite = new Image("weapon/asset/maximumInfinity.png");
+        this.setIcon(utils.SpriteManager.loadImage("weapon/icon/maximumInfinityIcon.png"));
+        this.sprite = utils.SpriteManager.loadImage("weapon/asset/maximumInfinity.png");
         timeSinceUse = this.getCooldown();
         radius = 360;
         damage = 15;

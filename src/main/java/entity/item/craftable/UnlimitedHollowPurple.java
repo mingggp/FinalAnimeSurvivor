@@ -42,8 +42,8 @@ public class UnlimitedHollowPurple extends Item implements Usable, Renderable, U
     public UnlimitedHollowPurple(GameManager gameManager) {
         super("Unlimited Hollow Purple");
         this.gameManager=gameManager;
-        this.sprite = new Image("weapon/asset/MaximumRed.png");
-        this.setIcon(new Image("weapon/icon/unlimitedHollowPurple.png"));
+        this.sprite = utils.SpriteManager.loadImage("weapon/asset/MaximumRed.png");
+        this.setIcon(utils.SpriteManager.loadImage("weapon/icon/unlimitedHollowPurple.png"));
         cooldown = 12;
         timeSinceUse = cooldown;
         damage = 15;

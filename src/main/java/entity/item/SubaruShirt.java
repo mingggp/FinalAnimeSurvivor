@@ -17,7 +17,7 @@ public class SubaruShirt extends Item implements Droppable , Unique {
         super("subaruShirt");
         this.setAmount(1);
         this.gameManager = gameManager;
-        this.setIcon( new Image("item/icon/subaruShirt.png"));
+        this.setIcon( utils.SpriteManager.loadImage("item/icon/subaruShirt.png"));
     }
     public SubaruShirt(SubaruShirt subaruShirt){
         super(subaruShirt.getName());

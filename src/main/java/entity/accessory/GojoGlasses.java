@@ -16,7 +16,7 @@ public class GojoGlasses extends Accessory{
     public GojoGlasses(GameManager gameManager){
         super("Gojo's Glasses",5);
         this.gameManager=gameManager;
-        this.setIcon(new Image("accessory/icon/gojoglass.png"));
+        this.setIcon(utils.SpriteManager.loadImage("accessory/icon/gojoglass.png"));
     }
 
     @Override

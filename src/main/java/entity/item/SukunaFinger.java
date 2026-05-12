@@ -17,7 +17,7 @@ public class SukunaFinger extends Item implements Material, Droppable {
         super("sukunaFinger");
         this.setAmount(1);
         this.gameManager = gameManager;
-        this.setIcon( new Image("item/icon/sukunaFinger.png"));
+        this.setIcon( utils.SpriteManager.loadImage("item/icon/sukunaFinger.png"));
     }
     public SukunaFinger(SukunaFinger sukunaFinger){
         super(sukunaFinger.getName());

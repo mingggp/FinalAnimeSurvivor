@@ -30,8 +30,8 @@ public class MaximumCleave extends Weapon implements SizeIncreasable , CooldownD
 
     public MaximumCleave(GameManager gameManager) {
         super("Spider Web", 1, 3);
-        this.setIcon(new Image("weapon/icon/maximumCleaveIcon.png"));
-        this.sprite = (new Image("weapon/asset/SpiderWeb.png"));
+        this.setIcon(utils.SpriteManager.loadImage("weapon/icon/maximumCleaveIcon.png"));
+        this.sprite = (utils.SpriteManager.loadImage("weapon/asset/SpiderWeb.png"));
         this.gameManager = gameManager;
         timeSinceUse = 10;
         maxRange = 96*4;

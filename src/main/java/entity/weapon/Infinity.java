@@ -35,8 +35,8 @@ public class Infinity extends Weapon implements Evolvable , DamageIncreasable, S
     public Infinity(GameManager gameManager) {
         super("Mugen", 8, 0);
         this.gameManager = gameManager;
-        this.setIcon(new Image("weapon/icon/infinityIcon.png"));
-        this.sprite = new Image("weapon/asset/infinity.png");
+        this.setIcon(utils.SpriteManager.loadImage("weapon/icon/infinityIcon.png"));
+        this.sprite = utils.SpriteManager.loadImage("weapon/asset/infinity.png");
         timeSinceUse = this.getCooldown();
         radius = 144;
         damage = 3;

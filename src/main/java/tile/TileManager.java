@@ -20,10 +20,10 @@ public class TileManager {
     }
     public void getTileImage(){
         tiles[0] = new Tile();
-        tiles[0].image = new Image("tile/dirt.png");
+        tiles[0].image = utils.SpriteManager.loadImage("tile/dirt.png");
         tiles[0].collision = true;
         tiles[1] = new Tile();
-        tiles[1].image = new Image("tile/grass.png");
+        tiles[1].image = utils.SpriteManager.loadImage("tile/grass.png");
     }
     public void loadMap(){
         try{

@@ -31,8 +31,8 @@ public class Blue extends Weapon implements Evolvable, DamageIncreasable, SizeIn
     public Blue(GameManager gameManager){
         super("Lapse Blue", 8, 4);
         this.gameManager = gameManager;
-        this.sprite = new Image("weapon/asset/lapse.png");
-        this.setIcon(new Image("weapon/icon/blue.png"));
+        this.sprite = utils.SpriteManager.loadImage("weapon/asset/lapse.png");
+        this.setIcon(utils.SpriteManager.loadImage("weapon/icon/blue.png"));
         timeSinceUse = this.getCooldown();
         animationTime=0;
         damage = 4;
@@ -66,10 +66,12 @@ public class Blue extends Weapon implements Evolvable, DamageIncreasable, SizeIn
     public void use(double accumulateDeltaTime) {
         timeSinceUse+=accumulateDeltaTime;
         if(timeSinceUse >= this.getCooldown()){
+            entity.enemy.Enemy target = gameManager.getClosestTarget();
+            if (target == null) return;
             timeSinceUse =0;
             Blue blue = new Blue(this);
-            blue.setMapX(gameManager.getClosestTarget().getMapX());
-            blue.setMapY(gameManager.getClosestTarget().getMapY());
+            blue.setMapX(target.getMapX());
+            blue.setMapY(target.getMapY());
             gameManager.getUsingWeaponList().add(blue);
         }
     }

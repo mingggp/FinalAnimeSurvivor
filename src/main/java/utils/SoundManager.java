@@ -4,13 +4,14 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
-import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 
-public class SoundManager { // FROM GEMINI
+public class SoundManager {
 
     private static SoundManager instance;
     private MediaPlayer musicPlayer;
+    private String currentSongName;
     private double volume = 0.5;
     private HashMap<String, Media> soundLibrary = new HashMap<>();
 
@@ -22,30 +23,59 @@ public class SoundManager { // FROM GEMINI
     }
 
     public void loadSounds() {
-        soundLibrary.put("BGM1", new Media(getClass().getResource("/bgm/aonosumika.mp3" ).toExternalForm()));
+        Media bgm1 = loadMedia("/bgm/aonosumika.mp3");
+        if (bgm1 != null) soundLibrary.put("BGM1", bgm1);
     }
+
+    private Media loadMedia(String resourcePath) {
+        URL url = getClass().getResource(resourcePath);
+        if (url == null) {
+            System.err.println("[SoundManager] Missing resource: " + resourcePath);
+            return null;
+        }
+        return new Media(url.toExternalForm());
+    }
+
     public void loadMediaPlayer(String songName){
-        musicPlayer = new MediaPlayer(soundLibrary.get(songName));
+        Media media = soundLibrary.get(songName);
+        if (media == null) {
+            System.err.println("[SoundManager] No song named: " + songName);
+            return;
+        }
+        musicPlayer = new MediaPlayer(media);
         musicPlayer.setVolume(volume);
         musicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        this.currentSongName = songName;
     }
+
     public void startBGM(String songName) {
+        if (!songName.equals(currentSongName)) {
+            loadMediaPlayer(songName);
+        }
+        if (musicPlayer == null) return;
         musicPlayer.seek(Duration.ZERO);
         musicPlayer.play();
     }
     public void pauseBGM(){
-        musicPlayer.pause();
+        if (musicPlayer != null) musicPlayer.pause();
     }
     public void playBGM(){
-        musicPlayer.play();
+        if (musicPlayer != null) musicPlayer.play();
     }
 
-    public void playSFX(String fileName) {
-        // Create a temporary player for short sounds
-        Media hit = new Media(new File(fileName).toURI().toString());
-        MediaPlayer sfx = new MediaPlayer(hit);
+    /**
+     * Play a one-shot sound effect from a classpath resource path
+     * (e.g. "/sfx/hit.mp3"). JAR-safe replacement for the old File-based API.
+     */
+    public void playSFX(String resourcePath) {
+        URL url = getClass().getResource(resourcePath);
+        if (url == null) {
+            System.err.println("[SoundManager] SFX resource not found: " + resourcePath);
+            return;
+        }
+        MediaPlayer sfx = new MediaPlayer(new Media(url.toExternalForm()));
+        sfx.setVolume(volume);
         sfx.play();
-        // Automatically clean up when done
         sfx.setOnEndOfMedia(sfx::dispose);
     }
     /*public void warmupAudio() {

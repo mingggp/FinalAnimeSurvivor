@@ -32,8 +32,8 @@ public class MaximumDismantle extends Weapon implements SizeIncreasable, Cooldow
 
     public MaximumDismantle(GameManager gameManager){
         super("Maximum Dismantle",1,2);
-        sprite = new Image("weapon/asset/maximumDismantle.png");
-        this.setIcon(new Image("weapon/icon/maximumDismantleIcon.png"));
+        sprite = utils.SpriteManager.loadImage("weapon/asset/maximumDismantle.png");
+        this.setIcon(utils.SpriteManager.loadImage("weapon/icon/maximumDismantleIcon.png"));
         this.gameManager = gameManager;
         this.speed = 2000;
         timeSinceUse = 0;

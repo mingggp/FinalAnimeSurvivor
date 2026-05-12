@@ -26,7 +26,7 @@ public class ExpOrb extends Entity {
         this.xpAmount = xpAmount;
         this.gameManager = gameManager;
         try {
-            this.red = new Image("item/redorb.png");
+            this.red = utils.SpriteManager.loadImage("item/redorb.png");
         } catch (Exception e) {
             this.red = null;
         }

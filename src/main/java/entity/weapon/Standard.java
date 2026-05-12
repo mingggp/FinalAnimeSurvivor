@@ -38,9 +38,9 @@ public class Standard extends Weapon implements Evolvable , DamageIncreasable,Si
     public Standard(GameManager gameManager){
         super("OSU!",8,2);
         this.gameManager = gameManager;
-        this.setIcon(new Image("weapon/icon/osu.png"));
-        this.cursor = new Image("weapon/asset/cursor.png");
-        this.trail = new Image("weapon/asset/cursorTrail.png");
+        this.setIcon(utils.SpriteManager.loadImage("weapon/icon/osu.png"));
+        this.cursor = utils.SpriteManager.loadImage("weapon/asset/cursor.png");
+        this.trail = utils.SpriteManager.loadImage("weapon/asset/cursorTrail.png");
         timeSinceUse = this.getCooldown();
         this.width =64;
         this.height = 64;

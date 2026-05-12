@@ -51,7 +51,7 @@ public class GameCanvas extends Canvas{
         }
         else if(state == GameState.DEATH && !isResultDrawn){
 
-            gc.drawImage(new Image("STAGECOMPLETE.png"),0,0);
+            gc.drawImage(utils.SpriteManager.loadImage("STAGECOMPLETE.png"),0,0);
             isResultDrawn = true;
             return;
         }
