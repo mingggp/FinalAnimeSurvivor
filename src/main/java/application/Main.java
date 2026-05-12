@@ -93,6 +93,15 @@ public class Main extends Application {
     private LevelUpChoice levelUpChoice;
     private ChestChoice chestChoice;
 
+    /**
+     * Fat-JAR entry point (non-modular / classpath deployment).
+     * The {@link Launcher} shim is used for modular runs; this method
+     * covers the shadow-JAR case where {@code Main} is the manifest class.
+     */
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage){
         SoundManager.getInstance().loadSounds();
