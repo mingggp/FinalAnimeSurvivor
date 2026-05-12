@@ -154,15 +154,16 @@ public class SoundManager {
      * @param resourcePath absolute classpath path to the audio file
      *                     (e.g. {@code "/sfx/hit.mp3"})
      */
-    public void playSFX(String resourcePath) {
-        URL url = getClass().getResource(resourcePath);
-        if (url == null) {
-            System.err.println("[SoundManager] SFX resource not found: " + resourcePath);
-            return;
-        }
-        MediaPlayer sfx = new MediaPlayer(new Media(url.toExternalForm()));
-        sfx.setVolume(volume);
-        sfx.play();
-        sfx.setOnEndOfMedia(sfx::dispose);
+    /**
+     * Sets the master volume for BGM and future SFX calls.
+     *
+     * @param volume value in [0.0, 1.0]
+     */
+    public void setVolume(double volume) {
+        this.volume = Math.max(0.0, Math.min(1.0, volume));
+        if (musicPlayer != null) musicPlayer.setVolume(this.volume);
     }
+
+    /** Returns the current master volume in [0.0, 1.0]. */
+    public double getVolume() { return volume; }
 }
