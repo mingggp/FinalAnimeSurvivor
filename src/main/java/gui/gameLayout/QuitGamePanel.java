@@ -80,6 +80,7 @@ public class QuitGamePanel extends VBox {
         Button restartBtn = makeButton("↺  Restart");
         restartBtn.setPrefWidth(260);
         restartBtn.setOnMouseClicked(e -> {
+            this.setVisible(false);
             SceneManager.switchToCharacterMenu();
             gameManager.setCurrentState(GameState.CHARACTER_MENU);
         });
