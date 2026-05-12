@@ -256,7 +256,7 @@ add_paragraph()
 add_heading2("2.3 หน้าเมนูหลัก (Main Menu)")
 add_body("เมื่อเปิดโปรแกรมจะแสดงหน้าเมนูหลัก มีปุ่มดังนี้:")
 add_bullet("Play — เข้าสู่หน้าเลือกตัวละคร")
-add_bullet("Settings — ตั้งค่าเสียงและการแสดงผล")
+add_bullet("Settings — ตั้งค่าเสียง BGM (เพลงพื้นหลัง) และ SFX (เสียงเอฟเฟกต์) แยกกัน")
 add_bullet("Quit — ออกจากโปรแกรม")
 add_image_placeholder("[ภาพ Screenshot หน้า Main Menu]")
 
@@ -278,7 +278,7 @@ add_table_row(tbl4, ["ปุ่ม", "การกระทำ"], bold=True, siz
 add_table_row(tbl4, ["W / A / S / D", "เคลื่อนที่ตัวละคร"], size=15)
 add_table_row(tbl4, ["Tab", "เปิด/ปิดกระเป๋าสัมภาระ (Backpack)"], size=15)
 add_table_row(tbl4, ["Q", "เปิด/ปิดระบบใช้ของอัตโนมัติ"], size=15)
-add_table_row(tbl4, ["Esc", "หยุดชั่วคราว / แสดงกล่อง Quit"], size=15)
+add_table_row(tbl4, ["Esc", "เปิดเมนูหยุดเกมชั่วคราว (Pause) / ออกจากหน้าเมนู"], size=15)
 add_table_row(tbl4, ["W / S (ในเมนู Level Up)", "เลือกตัวเลือก"], size=15)
 add_table_row(tbl4, ["Space (ในเมนู Level Up)", "ยืนยันตัวเลือก"], size=15)
 add_table_row(tbl4, ["คลิกเมาส์ (ในเมนู Level Up)", "เลือกตัวเลือก"], size=15)
@@ -321,6 +321,37 @@ add_body(
     "กดที่ไอเทมเพื่อใช้งาน (สำหรับของที่ Usable) กด Tab เพื่อเปิด/ปิด"
 )
 add_image_placeholder("[ภาพ Screenshot กระเป๋าสัมภาระ]")
+
+add_heading3("หน้าหยุดเกมชั่วคราว (Pause Screen)")
+add_body(
+    "กด ESC ระหว่างเกมเพื่อเปิด Pause Screen ซึ่งมีปุ่มดังนี้:"
+)
+add_bullet("▶ Resume — กลับสู่การเล่นต่อ (หรือกด ESC อีกครั้ง)")
+add_bullet("⚙ Settings — เปิดหน้าตั้งค่าเสียง BGM/SFX ได้แม้อยู่ในเกม")
+add_bullet("⏹ Main Menu — ออกจากเกมและกลับสู่หน้าหลัก (เพลงจะหยุด)")
+add_image_placeholder("[ภาพ Screenshot Pause Screen]")
+
+add_heading3("หน้าตัวละครตาย (Death Screen)")
+add_body(
+    "เมื่อ HP ลดลงถึง 0 เกมจะแสดงหน้าผลลัพธ์บนหน้าจอ "
+    "พร้อมปุ่มสองปุ่มที่ด้านล่าง:"
+)
+add_bullet("↺ Restart — กลับไปหน้าเลือกตัวละครเพื่อเริ่มรอบใหม่")
+add_bullet("⏹ Main Menu — กลับสู่หน้าเมนูหลัก (เพลงหยุดโดยอัตโนมัติ)")
+add_image_placeholder("[ภาพ Screenshot Death Screen]")
+
+add_heading3("ระบบเสียง (Sound)")
+add_body("เกมมีเสียงประกอบครบทุกการกระทำ:")
+tbl_sfx = doc.add_table(rows=1, cols=2)
+tbl_sfx.style = 'Table Grid'
+add_table_row(tbl_sfx, ["เหตุการณ์", "เสียง"], bold=True, size=14, bg_color="D6E4F0")
+add_table_row(tbl_sfx, ["กดปุ่มทุกปุ่มใน UI", "เสียง Click สั้น"], size=14)
+add_table_row(tbl_sfx, ["เก็บ Exp Orb", "เสียง Sweep ขึ้น"], size=14)
+add_table_row(tbl_sfx, ["Level Up", "เสียง Arpeggio C→E→G→C"], size=14)
+add_table_row(tbl_sfx, ["Sukuna โจมตี (Cleave)", "เสียง Slash + Swoosh"], size=14)
+add_table_row(tbl_sfx, ["Gojo โจมตี (Infinity)", "เสียง Hum + Shimmer"], size=14)
+add_body("ปรับระดับเสียงได้แยกกัน ทั้ง BGM และ SFX ผ่านหน้า Settings")
+add_paragraph()
 
 doc.add_page_break()
 

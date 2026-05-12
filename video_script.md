@@ -1,5 +1,5 @@
 # บทพูดสำหรับวิดีโอนำเสนอ — Final Anime Survivor
-# ประมาณเวลา: ~9 นาที 30 วินาที
+# ประมาณเวลา: ~10 นาที
 
 ---
 
@@ -26,6 +26,14 @@
 "เริ่มต้นที่หน้า Main Menu ครับ มีปุ่มหลักสามปุ่มคือ
 Play, Settings และ Quit
 ผมจะกด Play เพื่อเข้าสู่หน้าเลือกตัวละครครับ"
+
+> **[แสดงหน้าจอ: กด Settings จาก Main Menu]**
+
+"ก่อนเริ่มเกม ลองดูหน้า Settings ก่อนครับ
+ที่นี่ปรับเสียงได้สองแบบแยกกันเลย
+แถบบนคือ BGM Volume สำหรับเพลงพื้นหลัง
+แถบล่างคือ SFX Volume สำหรับเสียงเอฟเฟกต์ต่าง ๆ ครับ
+กด Back กลับไป Main Menu แล้วค่อย Play ครับ"
 
 > **[แสดงหน้าจอ: Character Select — เลือก Sukuna หรือ Gojo]**
 
@@ -55,6 +63,10 @@ Play, Settings และ Quit
 ยิ่ง Bar หดลงเรื่อย ๆ แปลว่าอาวุธใกล้จะพร้อมยิงอีกครั้งครับ
 เมื่อ Bar หมดก็คือ Cooldown หมด พร้อมใช้แล้ว"
 
+"เกมยังมีเสียงเอฟเฟกต์ประกอบด้วยครับ
+ตั้งแต่เสียงกดปุ่ม เสียงเก็บ Exp Orb เสียง Level Up
+และเสียงโจมตีเฉพาะของ Sukuna และ Gojo ครับ"
+
 ### [02:30 – 03:15] ระบบ Level Up
 
 > **[แสดงหน้าจอ: เมนู Level Up — สามตัวเลือก]**
@@ -81,11 +93,23 @@ Evolve อาวุธที่ Max Level ให้แข็งแกร่ง�
 Subaru Shirt ฟื้นคืนชีพได้หนึ่งครั้ง
 และ Harvest เรียก Vacuum Effect ดูดของรอบ ๆ เข้ามาทันทีครับ"
 
+### [04:30 – 05:00] Pause Screen และ Death Screen
+
+> **[แสดงหน้าจอ: กด ESC ระหว่างเกม]**
+
+"ระหว่างเกมกด ESC ได้เลยครับ จะขึ้น Pause Screen
+มีปุ่ม Resume กลับเข้าเกม, Settings เปิดตั้งค่าเสียงได้แม้อยู่ในเกม
+และ Main Menu ออกจากเกมพร้อมหยุดเพลงอัตโนมัติครับ
+
+และเมื่อตัวละครตาย เกมจะแสดงหน้าผลลัพธ์
+พร้อมปุ่ม Restart กลับไปเลือกตัวละคร
+หรือ Main Menu เพื่อออกไปหน้าหลักครับ"
+
 ---
 
-## [04:30 – 07:30] การออกแบบโปรแกรม — OOP Concepts
+## [05:00 – 08:00] การออกแบบโปรแกรม — OOP Concepts
 
-### [04:30 – 05:15] Inheritance
+### [05:00 – 05:45] Inheritance
 
 > **[แสดงหน้าจอ: Slide UML หรือ โค้ดใน IDE]**
 
@@ -248,7 +272,7 @@ SpriteManager เป็น Utility ที่เราเขียนเพิ่
 > **[แสดงหน้าจอ: เกมรันอยู่ — ผู้เล่นกำลังสู้ศัตรู]**
 
 "สรุปคือ Final Anime Survivor เป็นเกม Survivor ที่มีระบบซับซ้อน
-มีอาวุธ 7 ชนิดพร้อม Evolved Form, Accessory 6 ชนิด
+มีอาวุธ 7 ชนิดพร้อม Evolved Form, Accessory 6 ชนิด, ระบบเสียง BGM/SFX แยกกัน
 ระบบ Level Up, Chest, Backpack, Tile Map, Collision Detection, Cooldown Bar และ VFX
 ทั้งหมดออกแบบตามหลัก OOP อย่างเป็นระบบครับ
 
@@ -266,8 +290,9 @@ SpriteManager เป็น Utility ที่เราเขียนเพิ่
 | 02:30–03:15 | เมนู Level Up |
 | 03:15–04:00 | เปิด Chest |
 | 04:00–04:30 | เปิด Backpack (Tab), ใช้ Soda |
-| 04:30–05:15 | Slide/IDE: Inheritance UML |
-| 05:15–06:00 | IDE: entityInterface/ folder |
+| 04:30–05:00 | Pause Screen (ESC), Death Screen |
+| 05:00–05:45 | Slide/IDE: Inheritance UML |
+| 05:45–06:30 | IDE: entityInterface/ folder |
 | 06:00–07:00 | IDE: GameManager weapon loop |
 | 07:00–07:30 | IDE: SoundManager singleton + Entity private fields |
 | 07:30–08:00 | IDE: WeaponTest.java + AccessoryTest.java |

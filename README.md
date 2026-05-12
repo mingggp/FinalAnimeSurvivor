@@ -54,7 +54,7 @@ java -jar FinalAnimeSurvivor.jar
 | `W` / `A` / `S` / `D` | Move character |
 | `Tab` | Open / close backpack |
 | `Q` | Toggle auto-use items |
-| `Esc` | Pause / Quit dialog |
+| `Esc` | Pause menu (Resume / Settings / Main Menu) |
 
 ### Level-Up Menu
 
@@ -63,6 +63,21 @@ java -jar FinalAnimeSurvivor.jar
 | `W` / `S` | Navigate choices |
 | `Space` | Confirm selection |
 | Mouse click | Select choice |
+
+---
+
+## Screens
+
+| Screen | How to reach | Description |
+|---|---|---|
+| Main Menu | Launch | Play, Settings, Quit |
+| Character Select | Play → | Choose Sukuna or Gojo, click card to start |
+| Settings | Main Menu → Settings | Adjust BGM volume and SFX volume independently |
+| In-Game | After character select | WASD move, Tab backpack, ESC pause |
+| Pause | ESC during game | Resume, open Settings, or return to Main Menu |
+| Level Up | On XP bar fill | Choose 1 of 3 upgrades (W/S navigate, Space/click confirm) |
+| Chest | Walk into chest | Evolve / Unite / Craft options |
+| Death | HP reaches 0 | Restart (back to character select) or Main Menu |
 
 ---
 
@@ -135,6 +150,22 @@ Weapons can evolve when at max level and a **Chest** is collected:
 - Single tile-based map (`map1.txt`), 80 × 60 tiles, each tile is 96 × 96 px → **7,680 × 5,760** world size.
 - Border tiles are solid walls (dirt); interior is open grass.
 - Camera follows the player.
+
+---
+
+## Sound
+
+All in-game actions have sound effects:
+
+| Event | SFX |
+|---|---|
+| Any button click | Short UI tick |
+| Collect Exp Orb | Rising sweep |
+| Level Up | C→E→G→C arpeggio |
+| Sukuna attack (Cleave) | Slash + swoosh |
+| Gojo attack (Infinity) | Low hum + shimmer |
+
+BGM and SFX volumes are controlled **separately** via Settings.
 
 ---
 
