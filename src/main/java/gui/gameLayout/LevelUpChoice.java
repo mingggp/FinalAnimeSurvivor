@@ -119,6 +119,7 @@ public class LevelUpChoice extends VBox {
 
         btn.setText("  " + name + "\n  " + levelStr);
         btn.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        btn.setTextFill(Color.web("#f5f5f5"));
     }
 
     public void update() {

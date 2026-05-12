@@ -14,7 +14,14 @@ import javafx.scene.text.Text;
 import utils.SceneManager;
 import utils.SoundManager;
 
-/** Semi-transparent pause overlay centred on screen. */
+/**
+ * Dual-mode overlay panel:
+ * <ul>
+ *   <li><b>Pause mode</b> — "PAUSED" title, Resume / Settings / Main Menu</li>
+ *   <li><b>Death mode</b> — two buttons at the bottom so they don't cover
+ *       the result image drawn on the canvas underneath</li>
+ * </ul>
+ */
 public class QuitGamePanel extends VBox {
 
     private static final String BTN_NORMAL =
@@ -26,28 +33,29 @@ public class QuitGamePanel extends VBox {
         "-fx-font-weight: bold; -fx-background-radius: 10; -fx-border-color: #e94560;" +
         "-fx-border-width: 2; -fx-border-radius: 10; -fx-cursor: hand;";
 
-    private final GameManager gameManager;
+    private final VBox pauseContent;
+    private final VBox deathContent;
+    private InGameSettingPanel settingPanel;
 
     public QuitGamePanel(GameManager gameManager) {
-        this.gameManager = gameManager;
-
         this.setAlignment(Pos.CENTER);
-        this.setSpacing(20);
-        this.setPadding(new Insets(50, 60, 50, 60));
-        this.setMaxSize(440, 380);
+        this.setSpacing(0);
+        this.setMaxSize(460, 500);
         this.setStyle(
             "-fx-background-color: rgba(13,13,26,0.93);" +
             "-fx-background-radius: 18;" +
             "-fx-border-color: #e94560; -fx-border-width: 3; -fx-border-radius: 18;");
+        this.setVisible(false);
 
-        Text title = new Text("⏸  PAUSED");
-        title.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 52));
-        title.setFill(Color.web("#ffd700"));
-        title.setEffect(new DropShadow(14, Color.web("#ffd700")));
+        // ── Pause content ────────────────────────────────────────────────────
+        Text pauseTitle = new Text("⏸  PAUSED");
+        pauseTitle.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 52));
+        pauseTitle.setFill(Color.web("#ffd700"));
+        pauseTitle.setEffect(new DropShadow(14, Color.web("#ffd700")));
 
-        Text hint = new Text("Press ESC to resume");
-        hint.setFont(Font.font("Arial", FontWeight.NORMAL, 18));
-        hint.setFill(Color.web("#aaaacc"));
+        Text pauseHint = new Text("Press ESC to resume");
+        pauseHint.setFont(Font.font("Arial", FontWeight.NORMAL, 18));
+        pauseHint.setFill(Color.web("#aaaacc"));
 
         Button resumeBtn = makeButton("▶  Resume");
         resumeBtn.setOnMouseClicked(e -> {
@@ -55,11 +63,64 @@ public class QuitGamePanel extends VBox {
             SceneManager.unpause();
         });
 
+        Button settingsBtn = makeButton("⚙  Settings");
+        settingsBtn.setOnMouseClicked(e -> {
+            this.setVisible(false);
+            if (settingPanel != null) settingPanel.setVisible(true);
+        });
+
         Button menuBtn = makeButton("⏹  Main Menu");
         menuBtn.setOnMouseClicked(e -> gameManager.resetGame());
 
-        this.getChildren().addAll(title, hint, resumeBtn, menuBtn);
-        this.setVisible(false);
+        pauseContent = new VBox(16, pauseTitle, pauseHint, resumeBtn, settingsBtn, menuBtn);
+        pauseContent.setAlignment(Pos.CENTER);
+        pauseContent.setPadding(new Insets(36, 40, 36, 40));
+
+        // ── Death content ────────────────────────────────────────────────────
+        Button restartBtn = makeButton("↺  Restart");
+        restartBtn.setPrefWidth(260);
+        restartBtn.setOnMouseClicked(e -> {
+            SceneManager.switchToCharacterMenu();
+            gameManager.setCurrentState(GameState.CHARACTER_MENU);
+        });
+
+        Button homeBtn = makeButton("⏹  Main Menu");
+        homeBtn.setPrefWidth(260);
+        homeBtn.setOnMouseClicked(e -> gameManager.resetGame());
+
+        HBox deathBtns = new HBox(20, restartBtn, homeBtn);
+        deathBtns.setAlignment(Pos.CENTER);
+
+        deathContent = new VBox(deathBtns);
+        deathContent.setAlignment(Pos.CENTER);
+        deathContent.setPadding(new Insets(20, 30, 20, 30));
+
+        this.getChildren().add(pauseContent);
+    }
+
+    /** Call before setVisible(true) to select which mode to display. */
+    public void setDeathMode(boolean death) {
+        this.getChildren().clear();
+        if (death) {
+            // Transparent background — buttons float over the result image
+            this.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+            this.setTranslateY(360);   // push buttons to bottom of screen
+            this.setMaxSize(700, 120);
+            this.getChildren().add(deathContent);
+        } else {
+            this.setStyle(
+                "-fx-background-color: rgba(13,13,26,0.93);" +
+                "-fx-background-radius: 18;" +
+                "-fx-border-color: #e94560; -fx-border-width: 3; -fx-border-radius: 18;");
+            this.setTranslateY(0);
+            this.setMaxSize(460, 500);
+            this.getChildren().add(pauseContent);
+        }
+    }
+
+    /** Inject the in-game settings panel so the Settings button can show it. */
+    public void setSettingPanel(InGameSettingPanel panel) {
+        this.settingPanel = panel;
     }
 
     private Button makeButton(String label) {

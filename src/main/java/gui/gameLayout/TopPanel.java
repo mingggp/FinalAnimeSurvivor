@@ -31,8 +31,8 @@ public class TopPanel extends Pane {
             "-fx-background-color: rgba(13,13,26,0.82);" +
             "-fx-background-radius: 20;" +
             "-fx-border-color: #e94560; -fx-border-width: 2; -fx-border-radius: 20;");
-        timerBox.setPrefWidth(160);
-        timerBox.setLayoutX(880);   // ~centre of 1920
+        timerBox.setPrefWidth(180);
+        timerBox.setLayoutX(870);   // 960 - 90 = centre of 1920
         timerBox.setLayoutY(12);
 
         // ── Level badge (top-right) ──────────────────────────────────────────

@@ -274,6 +274,7 @@ public class GameManager {
 
         spawner.resetEnemyInSpawner();
         VFXManager.clear();
+        SoundManager.getInstance().stopBGM();
         this.setCurrentState(GameState.MAIN_MENU);
         SceneManager.switchToMenu();
     }

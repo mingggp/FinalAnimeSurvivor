@@ -29,8 +29,6 @@ public class SettingCanvas extends VBox {
         "-fx-background-color: #e94560; -fx-text-fill: #ffffff; -fx-font-size: 22px;" +
         "-fx-font-weight: bold; -fx-background-radius: 10; -fx-border-color: #e94560;" +
         "-fx-border-width: 2; -fx-border-radius: 10; -fx-cursor: hand;";
-    private static final String SLIDER_STYLE =
-        "-fx-control-inner-background: #2c2c54; -fx-accent: #e94560;";
 
     private final GameManager gameManager;
 
@@ -50,14 +48,7 @@ public class SettingCanvas extends VBox {
         title.setFill(Color.web("#e94560"));
         title.setEffect(new DropShadow(18, Color.web("#e94560")));
 
-        VBox panel = new VBox(28);
-        panel.setAlignment(Pos.CENTER);
-        panel.setPadding(new Insets(40));
-        panel.setMaxWidth(540);
-        panel.setStyle(
-            "-fx-background-color: #0d0d1aCC; -fx-background-radius: 16;" +
-            "-fx-border-color: #e94560; -fx-border-width: 2; -fx-border-radius: 16;");
-        panel.getChildren().add(buildVolumeRow());
+        VBox panel = buildPanel();
 
         Button backButton = makeButton("← Back");
         backButton.setOnMouseClicked(e -> {
@@ -68,38 +59,60 @@ public class SettingCanvas extends VBox {
         this.getChildren().addAll(title, panel, backButton);
     }
 
-    private VBox buildVolumeRow() {
-        Label label = new Label("♪  Master Volume");
-        label.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+    public static VBox buildPanel() {
+        VBox panel = new VBox(24);
+        panel.setAlignment(Pos.CENTER_LEFT);
+        panel.setPadding(new Insets(36, 48, 36, 48));
+        panel.setMaxWidth(560);
+        panel.setStyle(
+            "-fx-background-color: rgba(13,13,26,0.95); -fx-background-radius: 16;" +
+            "-fx-border-color: #e94560; -fx-border-width: 2; -fx-border-radius: 16;");
+
+        panel.getChildren().addAll(
+            buildVolumeRow("♪  BGM Volume",
+                SoundManager.getInstance().getBgmVolume(),
+                v -> SoundManager.getInstance().setBgmVolume(v)),
+            buildVolumeRow("✦  SFX Volume",
+                SoundManager.getInstance().getSfxVolume(),
+                v -> SoundManager.getInstance().setSfxVolume(v))
+        );
+        return panel;
+    }
+
+    private static VBox buildVolumeRow(String labelText, double initialValue,
+                                       java.util.function.DoubleConsumer onChange) {
+        Label label = new Label(labelText);
+        label.setFont(Font.font("Arial", FontWeight.BOLD, 22));
         label.setTextFill(Color.web("#f5f5f5"));
 
-        Slider slider = new Slider(0, 1, SoundManager.getInstance().getVolume());
-        slider.setPrefWidth(420);
-        slider.setShowTickLabels(true);
+        Slider slider = new Slider(0, 1, initialValue);
+        slider.setPrefWidth(380);
+        // No tick labels — they show confusing decimals; our own label covers it
+        slider.setShowTickLabels(false);
         slider.setShowTickMarks(true);
         slider.setMajorTickUnit(0.25);
         slider.setBlockIncrement(0.05);
-        slider.setStyle(SLIDER_STYLE);
+        slider.setStyle("-fx-control-inner-background: #2c2c54; -fx-accent: #e94560;");
 
-        Label valueLabel = new Label(pct(slider.getValue()));
+        Label valueLabel = new Label(pct(initialValue));
         valueLabel.setFont(Font.font("Arial", FontWeight.BOLD, 22));
         valueLabel.setTextFill(Color.web("#ffd700"));
-        valueLabel.setPrefWidth(60);
+        valueLabel.setMinWidth(55);
 
         slider.valueProperty().addListener((obs, o, n) -> {
-            SoundManager.getInstance().setVolume(n.doubleValue());
+            onChange.accept(n.doubleValue());
             valueLabel.setText(pct(n.doubleValue()));
         });
 
         HBox row = new HBox(16, slider, valueLabel);
         row.setAlignment(Pos.CENTER_LEFT);
 
-        VBox box = new VBox(10, label, row);
+        VBox box = new VBox(8, label, row);
         box.setAlignment(Pos.CENTER_LEFT);
         return box;
     }
 
-    private Button makeButton(String text) {
+    static Button makeButton(String text) {
         Button b = new Button(text);
         b.setPrefWidth(300);
         b.setPrefHeight(60);
@@ -111,5 +124,5 @@ public class SettingCanvas extends VBox {
         return b;
     }
 
-    private String pct(double v) { return (int) Math.round(v * 100) + "%"; }
+    static String pct(double v) { return (int) Math.round(v * 100) + "%"; }
 }

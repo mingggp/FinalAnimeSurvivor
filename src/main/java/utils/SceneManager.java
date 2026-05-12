@@ -4,6 +4,7 @@ import entity.accessory.Accessory;
 import entity.item.Item;
 import entity.weapon.Weapon;
 import gui.gameLayout.*;
+import gui.gameLayout.InGameSettingPanel;
 import entityInterface.GameObject;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -79,6 +80,9 @@ public class SceneManager {
     /** Panel that shows the chest reward to the player. */
     private static ChestChoice chestChoice;
 
+    /** In-game settings overlay, accessible from pause screen. */
+    private static InGameSettingPanel inGameSettingPanel;
+
     /**
      * Tracks whether the backpack was visible before a temporary overlay
      * (level-up, chest, pause) hid it, so it can be restored on dismiss.
@@ -129,7 +133,7 @@ public class SceneManager {
 
     // For game layout
 
-    public static void setInitialGameLayout(BackpackPanel backpackPanel, LevelPanel levelPanel, Parent statPanel, WeaponAndAccessoryPanel weaponAndAccessoryPanel, TopPanel topPanel, Parent quitGamePanel, LevelUpChoice levelUpChoice,ChestChoice chestChoice){
+    public static void setInitialGameLayout(BackpackPanel backpackPanel, LevelPanel levelPanel, Parent statPanel, WeaponAndAccessoryPanel weaponAndAccessoryPanel, TopPanel topPanel, Parent quitGamePanel, LevelUpChoice levelUpChoice, ChestChoice chestChoice){
         SceneManager.backpackPanel = backpackPanel;
         SceneManager.levelPanel = levelPanel;
         SceneManager.statPanel = statPanel;
@@ -138,30 +142,42 @@ public class SceneManager {
         SceneManager.quitGamePanel = quitGamePanel;
         SceneManager.levelUpChoice = levelUpChoice;
         SceneManager.chestChoice = chestChoice;
+
+        // Build in-game settings panel; Back returns to pause overlay
+        inGameSettingPanel = new InGameSettingPanel(() -> {
+            inGameSettingPanel.setVisible(false);
+            quitGamePanel.setVisible(true);
+        });
+        ((QuitGamePanel) quitGamePanel).setSettingPanel(inGameSettingPanel);
+
         SceneManager.gameRoot.getChildren().add(levelPanel);
         SceneManager.gameRoot.getChildren().add(statPanel);
         SceneManager.gameRoot.getChildren().add(weaponAndAccessoryPanel);
         SceneManager.gameRoot.getChildren().add(topPanel);
         SceneManager.gameRoot.getChildren().add(quitGamePanel);
+        SceneManager.gameRoot.getChildren().add(inGameSettingPanel);
         SceneManager.gameRoot.getChildren().add(backpackPanel);
         SceneManager.gameRoot.getChildren().add(levelUpChoice);
         SceneManager.gameRoot.getChildren().add(chestChoice);
-
     }
     public static void pause(){
         SoundManager.getInstance().pauseBGM();
         backpackPanel.setVisible(false);
         statPanel.setVisible(true);
+        ((QuitGamePanel) quitGamePanel).setDeathMode(false);
         quitGamePanel.setVisible(true);
     }
     public static void unpause(){
         SoundManager.getInstance().playBGM();
         statPanel.setVisible(false);
+        inGameSettingPanel.setVisible(false);
         quitGamePanel.setVisible(false);
         backpackPanel.setVisible(wasBackpackVisible);
     }
     public static void showQuit(){
+        SoundManager.getInstance().stopBGM();
         backpackPanel.setVisible(false);
+        ((QuitGamePanel) quitGamePanel).setDeathMode(true);
         quitGamePanel.setVisible(true);
     }
     public static void showLevelUpChoice(){
