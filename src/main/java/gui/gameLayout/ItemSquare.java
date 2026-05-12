@@ -12,23 +12,62 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * A 50 × 50 px slot cell used in the weapon/accessory panel and the backpack grid.
+ *
+ * <p>Each {@code ItemSquare} can display:
+ * <ul>
+ *   <li>A weapon (icon + level string + cooldown overlay)</li>
+ *   <li>An accessory (icon + level string)</li>
+ *   <li>A backpack item (icon + stack count)</li>
+ *   <li>An empty grey square</li>
+ * </ul>
+ *
+ * <h2>Cooldown overlay</h2>
+ * <p>Weapon slots include a translucent black {@link Rectangle} that covers
+ * the bottom portion of the slot.  Its height is proportional to the remaining
+ * cooldown: full height = just fired, zero height = ready.  The overlay is
+ * updated every frame via {@link #tickCooldown(Weapon)} by
+ * {@link WeaponAndAccessoryPanel#tickCooldowns(Weapon[])}.
+ */
 public class ItemSquare extends Pane {
 
+    /** Side length of the square in pixels. */
     private static final double SQUARE_SIZE = 50;
+
+    /** Whether an item is currently displayed in this slot. */
     private boolean isDrawn;
+
+    /** Background fill colour (grey when empty, changes when filled). */
     private Color baseColor;
+
+    /** Backpack slot index for item-type squares (0-35). */
     private int slot;
+
+    /** The item / weapon / accessory currently shown in this slot. */
     private Item item;
+
+    /** Label showing the stack count (items) or upgrade level (weapons / accessories). */
     private final Label amountOrLevel = new Label();
+
+    /** Game manager — used by click handlers to trigger item use. */
     private final GameManager gameManager;
+
     /**
-     * Translucent overlay drawn from the bottom up while the weapon is on
-     * cooldown. Height shrinks toward 0 as the cooldown completes.
+     * Translucent overlay drawn from the bottom of the slot upward while the weapon
+     * is on cooldown.  Height shrinks toward 0 as the cooldown completes, giving a
+     * "filling-up" effect from the bottom.
      */
     private final Rectangle cooldownOverlay = new Rectangle(SQUARE_SIZE, 0);
+
+    /** Whether the cooldown overlay should be visible for this slot. */
     private boolean cooldownVisible = false;
 
-    //for weapon and accessory
+    /**
+     * Constructs a weapon/accessory slot (no click handler; cooldown overlay included).
+     *
+     * @param gameManager the game manager (used by subcomponent interaction)
+     */
     public ItemSquare(GameManager gameManager) {
         this.gameManager=gameManager;
         this.setPrefHeight(50);

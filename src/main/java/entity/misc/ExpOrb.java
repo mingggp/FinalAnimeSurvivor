@@ -7,18 +7,47 @@ import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+/**
+ * A small collectible orb that grants experience when the player walks over it.
+ *
+ * <p>Exp orbs are dropped by enemies when they die (with a 0.8 probability).
+ * They sit on the map until the player walks within {@link entity.character.Character#getMagnetRadius()}
+ * pixels, at which point they accelerate toward the player.  The
+ * {@link entity.item.Harvest} item can also "tag" orbs via {@link #tag()} to
+ * force them to move even if the player is far away.
+ *
+ * <p>Creation uses a two-step Prototype pattern:
+ * a template orb is created with {@link #ExpOrb(int, String, GameManager)} and
+ * stored in the master list; spawned copies are created with
+ * {@link #ExpOrb(ExpOrb, double, double)} at the enemy's death position.
+ */
 public class ExpOrb extends Entity {
 
+    /** XP reward granted to the player on collection. */
     private final int xpAmount;
+
+    /** Sprite image for the red (small) orb variant. */
     private Image red;
-    //private final Image green;
-    //private final Image yellow;
-    //private final Image blue;
+
+    /** Attraction speed toward the player in pixels per second. */
     private final int speed = 600;
+
+    /** Sprite / hitbox width in pixels. */
     private final int width = 32;
+
+    /** Sprite / hitbox height in pixels. */
     private final int height = 32;
+
+    /** Axis-aligned bounding box for player-pickup collision detection. */
     private BoundingBox hitbox;
+
+    /** Game manager — provides the player position and magnet radius. */
     private GameManager gameManager;
+
+    /**
+     * Whether this orb has been tagged by the {@link entity.item.Harvest} effect,
+     * causing it to move toward the player regardless of distance.
+     */
     private boolean taggedByHarvest;
 
     public ExpOrb(int xpAmount, String name,GameManager gameManager){

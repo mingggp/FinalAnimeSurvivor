@@ -16,16 +16,51 @@ import utils.SoundManager;
 
 
 
+/**
+ * JavaFX {@link Application} entry point for Final Anime Survivor.
+ *
+ * <h2>Startup flow</h2>
+ * <ol>
+ *   <li>Load audio resources via {@link utils.SoundManager}.</li>
+ *   <li>Instantiate {@link core.GameManager} (builds all master lists).</li>
+ *   <li>Create one canvas per "screen" (menu, game, character select, …).</li>
+ *   <li>Register canvases and UI panels with {@link utils.SceneManager}.</li>
+ *   <li>Attach keyboard handlers to the {@link javafx.scene.Scene}.</li>
+ *   <li>Start a capped-60-FPS {@link javafx.animation.AnimationTimer}.</li>
+ * </ol>
+ *
+ * <h2>Game loop</h2>
+ * <p>The {@link javafx.animation.AnimationTimer} accumulates elapsed time and
+ * calls {@link core.GameManager#update(double)} exactly once per logical frame
+ * (at 60 FPS).  {@link gui.GameCanvas#render(core.GameManager)} is called
+ * every animation-timer tick (screen refresh rate) to keep rendering smooth.
+ *
+ * <h2>Keyboard bindings</h2>
+ * <ul>
+ *   <li>{@code WASD} — movement (forwarded to {@link utils.InputManager})</li>
+ *   <li>{@code ESC} — toggle pause / return to menu</li>
+ *   <li>{@code TAB} — toggle backpack visibility</li>
+ *   <li>{@code SPACE} — dismiss chest reward panel</li>
+ *   <li>{@code F11} — exit full-screen</li>
+ * </ul>
+ */
 public class Main extends Application {
 
-
+    /** Target canvas width in pixels. */
     private static final int WINDOW_WIDTH = 1920;
+
+    /** Target canvas height in pixels. */
     private static final int WINDOW_HEIGHT = 1080;
+
+    /** Target simulation update rate. */
     private static final int FPS = 60;
 
+    /** The single shared game manager instance for this session. */
     private static GameManager gameManager;
 
+    /** Timestamp of the previous animation-timer tick in nanoseconds. */
     private long lastNanoTime;
+
     private MenuCanvas menuCanvas;
     private GameCanvas gameCanvas;
     private CharacterMenuCanvas characterMenuCanvas;
@@ -33,10 +68,20 @@ public class Main extends Application {
     private SettingCanvas settingCanvas;
     private CollectionCanvas collectionCanvas;
     private AchievementCanvas achievementCanvas;
+
+    /** Duration of one logical frame in nanoseconds (1 000 000 000 / FPS). */
     private double frameTime;
+
+    /** Accumulated real-world seconds since the last simulation update. */
     private double accumulateDeltaTime;
+
+    /** FPS counter — incremented each simulation step, reset every real second. */
     private int frameCount;
+
+    /** Accumulated fractional frames (drives 60-FPS capping logic). */
     private double updateDeltaTime;
+
+    /** Wall-clock accumulator used to print FPS once per second. */
     private double time;
 
     private BackpackPanel backpackPanel;

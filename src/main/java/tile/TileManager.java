@@ -5,13 +5,49 @@ import javafx.scene.image.Image;
 
 import java.io.*;
 
+/**
+ * Manages the tile map: loading tile archetypes, reading the map layout from a
+ * text file, and rendering the visible portion of the map each frame.
+ *
+ * <h2>Tile data</h2>
+ * <p>{@link #tiles} holds the small set of unique tile archetypes (e.g. dirt,
+ * grass).  {@link #mapTilesNum} is an 80 × 60 grid of indices into that array,
+ * one entry per tile cell.  The grid is indexed as {@code [col][row]} where
+ * (0, 0) is the top-left corner.
+ *
+ * <h2>Map file format</h2>
+ * <p>{@code /map/map1.txt} contains 60 rows × 80 space-separated integers.
+ * Each integer is an index into {@link #tiles}.
+ */
 public class TileManager {
 
+    /**
+     * Array of tile archetypes.  Each element defines the sprite and whether
+     * that tile type blocks movement.  Currently two types:
+     * index 0 = dirt (solid wall), index 1 = grass (walkable).
+     */
     public Tile[] tiles;
+
+    /**
+     * Tile-type index grid: {@code mapTilesNum[col][row]} holds the index
+     * into {@link #tiles} for that map cell.  Dimensions: 80 columns × 60 rows.
+     */
     public int[][] mapTilesNum;
+
+    /** Rendered tile size in pixels (96). */
     int tileSize;
+
+    /** Graphics context used to draw tile sprites. */
     GraphicsContext gc;
-    public TileManager(GraphicsContext gc,int tileSize){
+
+    /**
+     * Constructs the manager, allocates the tile array and map grid, and
+     * pre-loads tile images.
+     *
+     * @param gc       graphics context for rendering
+     * @param tileSize tile render size in pixels (should be 96)
+     */
+    public TileManager(GraphicsContext gc, int tileSize) {
         tiles = new Tile[2];
         mapTilesNum = new int[80][60];
         this.gc = gc;

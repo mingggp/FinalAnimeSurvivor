@@ -18,15 +18,41 @@ import vfx.VFXManager;
 
 import java.util.Objects;
 
-public class Cleave extends Weapon implements Evolvable , DamageIncreasable {
+/**
+ * Weapon — Cleave (Sukuna's starting weapon).
+ *
+ * <p>Cleave auto-attacks the closest enemy within range, dealing damage and
+ * spawning a slash VFX every {@link #hitInterval} seconds.  It has no cooldown
+ * (fires as fast as {@link #hitInterval} allows) and never expires —
+ * {@link #isExpired()} always returns {@code false}.
+ *
+ * <p>Can evolve into {@link MaximumCleave} when the player has equipped
+ * {@link entity.accessory.SukunaCloak} and Cleave is at max level.
+ */
+public class Cleave extends Weapon implements Evolvable, DamageIncreasable {
 
+    /** Game manager — provides the closest enemy target and the character reference. */
     private final GameManager gameManager;
+
+    /** Slash sprite asset (not currently rendered directly; VFX handles it). */
     private final Image sprite;
+
+    /** VFX slash size multiplier. */
     private int size;
+
+    /** Damage per hit. */
     private double damage;
+
+    /** Minimum seconds between hits. */
     private double hitInterval;
+
+    /** Accumulator for the hit-interval timer. */
     private double timeSinceLastHit;
+
+    /** Maximum distance (pixels) from the player within which Cleave can hit. */
     private double range;
+
+    /** Whether a target was found on the most recent hit tick. */
     private boolean haveTarget;
 
     public Cleave(GameManager gameManager){

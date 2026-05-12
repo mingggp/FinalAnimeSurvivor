@@ -8,9 +8,23 @@ import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class SubaruShirt extends Item implements Droppable , Unique {
+/**
+ * Item — Subaru's Shirt (passive one-shot revival).
+ *
+ * <p>When the character's HP drops to zero, {@link core.GameManager#update(double)}
+ * scans the backpack for a {@code SubaruShirt} and, if found within 1.5 seconds
+ * of death, fully heals the character (10 000 HP) instead of triggering game-over.
+ * Only one revival per run is allowed ({@code revived} flag in GameManager).
+ *
+ * <p>Implements {@link Unique} so only one copy can ever be offered per run and
+ * {@link Droppable} so it can be found on the ground.
+ */
+public class SubaruShirt extends Item implements Droppable, Unique {
 
+    /** Game manager — provides character HP, magnet radius, and screen helpers. */
     private GameManager gameManager;
+
+    /** Axis-aligned bounding box for pickup-collision detection on the map. */
     private BoundingBox itemHitBox;
 
     public SubaruShirt(GameManager gameManager) {

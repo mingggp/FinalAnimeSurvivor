@@ -12,16 +12,45 @@ import javafx.scene.image.Image;
 import utils.SceneManager;
 
 
-public class Harvest extends Item implements Usable, Updatable , Droppable {
+/**
+ * Item — Harvest (magnet / vacuum effect).
+ *
+ * <p>When used, spawns an active {@code Harvest} effect in the
+ * {@code usingItemList} that, for {@link #duration} seconds, tags every
+ * dropped exp-orb and item on the map so they are magnetically pulled toward
+ * the player at 400 px/s regardless of their distance.
+ *
+ * <p>Subject to a 5-second cooldown between activations.
+ *
+ * <p>Implements {@link Droppable} so it can appear on the ground after
+ * enemy drops; implements {@link Updatable} for the active-effect lifecycle.
+ */
+public class Harvest extends Item implements Usable, Updatable, Droppable {
 
+    /** Game manager — provides the item and exp-orb lists and magnet radius. */
     private GameManager gameManager;
+
+    /** Internal timer for the active-effect duration. */
     private double time;
+
+    /** Game-timer value at the last successful use (used to enforce cooldown). */
     private double usageTime;
+
+    /** Duration of the vacuum effect in seconds. */
     private double duration;
+
+    /** Minimum seconds between uses. */
     private double cooldown;
+
+    /** Axis-aligned bounding box for pickup-collision detection on the map. */
     private BoundingBox itemHitBox;
-    //for all item list
-    public Harvest(GameManager gameManager){
+
+    /**
+     * Master-list constructor — creates a Harvest with full stats.
+     *
+     * @param gameManager the game manager (source of the item / exp-orb lists)
+     */
+    public Harvest(GameManager gameManager) {
         super("harvest");
         this.setAmount(1);
         this.gameManager = gameManager;
@@ -30,8 +59,12 @@ public class Harvest extends Item implements Usable, Updatable , Droppable {
         this.duration = 5;
         this.cooldown = 5;
     }
-    //for copy
-    public Harvest(Harvest harvest){
+    /**
+     * Copy constructor used when spawning an active effect instance.
+     *
+     * @param harvest the template Harvest to copy settings from
+     */
+    public Harvest(Harvest harvest) {
         super(harvest.getName());
         this.setAmount(1);
         this.setIcon( harvest.getIcon());

@@ -17,17 +17,53 @@ import tile.TileManager;
 import vfx.VFXManager;
 
 
-public class GameCanvas extends Canvas{
+/**
+ * JavaFX {@link Canvas} that renders the entire game world each frame.
+ *
+ * <p>{@code GameCanvas} is driven by a JavaFX {@link javafx.animation.AnimationTimer}
+ * defined in the FXML controller.  Each tick:
+ * <ol>
+ *   <li>{@link core.GameManager#update(double)} advances the simulation.</li>
+ *   <li>{@link #render(GameManager)} draws the current frame.</li>
+ * </ol>
+ *
+ * <h2>Render order (back to front)</h2>
+ * <ol>
+ *   <li>Tile map (via {@link TileManager})</li>
+ *   <li>Ground VFX (world-space effects beneath entities)</li>
+ *   <li>Dropped items and exp-orbs</li>
+ *   <li>Chests</li>
+ *   <li>"Render on the ground" weapon effects (e.g. Infinity field)</li>
+ *   <li>Enemies</li>
+ *   <li>Player character</li>
+ *   <li>Active weapon projectiles</li>
+ *   <li>Damage text and slash VFX</li>
+ *   <li>Screen overlay VFX (on top of everything)</li>
+ *   <li>Skill pop-ups</li>
+ * </ol>
+ *
+ * <h2>Tile sizing</h2>
+ * <p>Base tile size is 64 px scaled by 1.5 → 96 px per tile.
+ */
+public class GameCanvas extends Canvas {
 
-    //private GameManager gameManager;
-    //private Image menuBG;
+    /** 2D rendering context for all draw calls. */
     private GraphicsContext gc;
+
+    /** Owns and renders the tile map. */
     private final TileManager tileManager;
+
+    /** Prevents the death/result screen from being drawn more than once. */
     private boolean isResultDrawn;
 
+    /** Base tile size before scaling. */
     private static final int originalTileSize = 64;
+
+    /** Scaling factor applied to tile size (1.5× → 96 px tiles). */
     private static final double scale = 1.5;
-    private static final int tileSize = (int) (originalTileSize*scale);
+
+    /** Final rendered tile size in pixels (96). */
+    private static final int tileSize = (int) (originalTileSize * scale);
 
     public GameCanvas(double width, double height,GameManager gamemanager) {
         super(width, height);

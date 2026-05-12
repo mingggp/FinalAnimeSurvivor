@@ -16,22 +16,62 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 
-public class Standard extends Weapon implements Evolvable , DamageIncreasable,SizeIncreasable , DurationIncreasable , CooldownDecreasable {
+/**
+ * Weapon — Standard (OSU! cursor).
+ *
+ * <p>Fires a bouncing osu! cursor projectile that ricochets off the screen
+ * edges and damages enemies it passes through for {@link #duration} seconds.
+ * Equipped instance spawns fresh projectile copies via the copy constructor
+ * each cooldown cycle.
+ *
+ * <p>Can evolve into {@link Lazer} when the player has {@link entity.accessory.KeyPad}
+ * equipped and Standard is at max level.
+ */
+public class Standard extends Weapon implements Evolvable, DamageIncreasable, SizeIncreasable, DurationIncreasable, CooldownDecreasable {
 
+    /** Game manager — provides player/enemy positions and the using-weapon list. */
     private final GameManager gameManager;
+
+    /** Osu! cursor sprite drawn at the projectile position. */
     private final Image cursor;
+
+    /** Trail sprite drawn behind the cursor (scaled by age of each sample). */
     private final Image trail;
+
+    /** Hitbox / cursor width in pixels; grows with upgrades. */
     private double width;
+
+    /** Hitbox / cursor height in pixels; grows with upgrades. */
     private double height;
+
+    /** Damage dealt to enemies per hit interval. */
     private double damage;
+
+    /** Travel speed in pixels per second. */
     private double speed;
+
+    /** Current AABB hitbox; recomputed every frame after movement. */
     private BoundingBox hitbox;
+
+    /** Maximum lifespan of an active projectile in seconds. */
     private double duration;
+
+    /** Normalised X direction of travel. */
     private double dx;
+
+    /** Normalised Y direction of travel. */
     private double dy;
+
+    /** Minimum seconds between damage ticks against enemies. */
     private double hitInterval;
+
+    /** Accumulator for the hit-interval timer. */
     private double timeSinceLastHit;
+
+    /** Ring buffer of previous X positions used to draw the fading trail. */
     private ArrayList<Double> trailX;
+
+    /** Ring buffer of previous Y positions used to draw the fading trail. */
     private ArrayList<Double> trailY;
 
     public Standard(GameManager gameManager){

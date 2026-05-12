@@ -14,28 +14,65 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 /**
- * Bible — a Vampire-Survivors-style orbital weapon. On each cooldown a wave
- * of book projectiles spawns and rotates around the player, damaging any
- * enemy they pass through. The active wave lives for {@code duration}
- * seconds. Upgrades scale damage, count, size, speed, duration and cooldown.
+ * Bible — an orbital weapon inspired by Vampire Survivors' rotating-bible mechanic.
+ *
+ * <p>When the cooldown elapses, a wave of {@link #amount} glowing books is spawned
+ * and rotated around the player at a fixed {@link #radius}.  Any enemy within the
+ * collision radius of a book takes damage every {@link #hitInterval} seconds.  The
+ * wave expires after {@link #duration} seconds.
+ *
+ * <h2>Implementation pattern</h2>
+ * <p>The <em>equipped</em> Bible instance sits in a weapon slot and drives its own
+ * cooldown via {@link #use(double)}.  When the cooldown fires it adds {@code this}
+ * to {@link core.GameManager#getUsingWeaponList()}.  The game loop then calls
+ * {@link #update(double)} and {@link #render(GraphicsContext)} on the same instance
+ * until {@link #isExpired()} returns {@code true}.
+ *
+ * <h2>Upgrade scaling</h2>
+ * <ul>
+ *   <li>Every level: damage ×1.15, angular speed ×1.05, duration ×1.05, cooldown ×0.95</li>
+ *   <li>Levels 3, 5, 7: +1 book</li>
+ * </ul>
  */
 public class Bible extends Weapon
         implements DamageIncreasable, SizeIncreasable, AmountIncreasable,
                    SpeedIncreasable, DurationIncreasable, CooldownDecreasable {
 
+    /** Game manager — provides player position and the enemy list. */
     private final GameManager gameManager;
+
+    /** Book sprite drawn at each orbital position. */
     private final Image sprite;
 
+    /** Damage dealt to enemies per hit interval. */
     private double damage;
-    private double radius;       // orbit radius
-    private double bookSize;     // sprite render size
-    private double angularSpeed; // radians per second
-    private double duration;     // how long an active wave lives
-    private int amount;          // how many books in the wave
+
+    /** Orbit radius in pixels (distance of books from the player centre). */
+    private double radius;
+
+    /** Rendered size of each book sprite in pixels (square). */
+    private double bookSize;
+
+    /** Angular velocity of the wave in radians per second. */
+    private double angularSpeed;
+
+    /** Seconds a spawned wave stays active before expiring. */
+    private double duration;
+
+    /** Number of books evenly distributed around the orbit. */
+    private int amount;
+
+    /** Minimum seconds between damage ticks against the same enemy group. */
     private double hitInterval;
+
+    /** Accumulator for the hit-interval timer. */
     private double timeSinceLastHit;
-    private double phase;        // current rotation angle for the wave
-    private boolean active;      // true while a wave is in flight
+
+    /** Current rotation angle of the wave in radians. */
+    private double phase;
+
+    /** {@code true} while a wave is active and should update / render. */
+    private boolean active;
 
     public Bible(GameManager gameManager){
         super("Bible", 8, 5);

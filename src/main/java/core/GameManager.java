@@ -29,55 +29,185 @@ import vfx.VFXManager;
 
 import java.util.*;
 
+/**
+ * Central controller for a single gameplay run.
+ *
+ * <p>{@code GameManager} acts as the game's Model in an MVC-like structure.
+ * It owns all runtime state — the player character, live enemies, equipped
+ * weapons and accessories, the backpack, exp orbs, chests, and the game timer.
+ * Every frame the JavaFX {@link javafx.animation.AnimationTimer} in
+ * {@link gui.GameCanvas} calls {@link #update(double)} to advance the
+ * simulation; after {@code update()} the canvas calls the various render
+ * methods to draw the current frame.
+ *
+ * <h2>Initialisation flow</h2>
+ * <ol>
+ *   <li>Constructor: build all master lists (characters, weapons, accessories,
+ *       items), create the spawner, load BGM.</li>
+ *   <li>{@link #startGame()}: copy the chosen character into the active slot,
+ *       load the tile map, place starter weapons, transition to
+ *       {@link GameState#PLAYING}.</li>
+ *   <li>{@link #update(double)}: called every frame while state is
+ *       {@link GameState#PLAYING}.</li>
+ *   <li>{@link #resetGame()}: tear down runtime state and return to the
+ *       main menu.</li>
+ * </ol>
+ *
+ * <h2>Coordinate system</h2>
+ * <p>The world is 7680 × 5760 pixels (80 × 60 tiles of 96 × 96 px each).
+ * The screen viewport is 1920 × 1080 px, centred on the character.
+ * Conversion helpers {@link #getScreenX(double)} and
+ * {@link #getScreenY(double)} translate world coordinates to screen pixels.
+ */
 public class GameManager {
-    
+
+    /** Random source used for drop / chest / level-up selection. */
     private Random random = new Random();
+
+    /** Current phase of the game; drives update logic and UI visibility. */
     private GameState currentState;
+
+    /** Keyboard state; injected from the JavaFX scene and read every frame. */
     private InputManager inputManager;
+
+    /** Unused list — kept for future multi-character support. */
     private ArrayList<Character> characterList;
+
+    /** The currently active player-controlled character. */
     private Character character;
+
+    /** Total seconds elapsed since the run started. */
     private double gameTimer;
+
+    /** Current player level (incremented when {@link #currentExperience} hits the threshold). */
     private int level;
+
+    /** Experience points accumulated toward the next level-up. */
     private int currentExperience;
+
+    /** Experience required to reach the next level; scales with {@link #level}. */
     private int ExperienceForNextLevel;
+
+    /** Enemies currently active in the world (alive or just killed this frame). */
     private ArrayList<Enemy> inGameEnemyList;
+
+    /** Unused — reserved for future enemy master list. */
     private ArrayList<Enemy> AllEnemyList;
+
+    /** Master list of items that can be crafted from materials. */
     private ArrayList<Item> allCraftableItemList;
+
+    /** Master list of items that enemies can drop. */
     private ArrayList<Item> allDroppableItemList;
+
+    /** 36-slot player backpack; {@code null} entries are empty slots. */
     private Item[] backpack;
+
+    /** Items that have been dropped on the map and are awaiting pickup. */
     private ArrayList<Item> droppedItemList;
+
+    /** Consumable items currently executing their timed effect (e.g. Soda buff). */
     private ArrayList<Item> usingItemList;
+
+    /** Master list of exp-orb templates (currently just one type). */
     private ArrayList<ExpOrb> allExpOrbList;
+
+    /** Exp orbs currently present on the map. */
     private ArrayList<ExpOrb> droppedExpOrbList;
+
+    /**
+     * Projectile / effect instances currently travelling through the world.
+     * Populated by {@link entity.weapon.Weapon#use(double)}; cleared when
+     * {@link entity.weapon.Weapon#isExpired()} returns {@code true}.
+     */
     private ArrayList<Weapon> usingWeaponList;
+
+    /**
+     * Pool of weapons not yet owned by the player; offered at level-up.
+     * Entries are removed when selected and returned when the choice is skipped.
+     */
     private ArrayList<Weapon> allWeaponList;
+
+    /** Six equipped weapon slots; {@code null} entries are empty. */
     private Weapon[] weaponList;
+
+    /** Pool of accessories not yet owned; offered at level-up. */
     private ArrayList<Accessory> allAccessoryList;
+
+    /** Six equipped accessory slots; {@code null} entries are empty. */
     private Accessory[] accessoryList;
+
+    /** Manages the tile map — loading, storing, and providing tile data. */
     private TileManager tileManager;
+
+    /** Prototype chest used to spawn new chest instances when enemies die. */
     private Chest chest;
+
+    /** Chests currently placed on the map (up to 5 at a time). */
     private ArrayList<Chest> existingChestList;
 
+    /** All selectable playable characters. */
     private Character[] allCharacterList;
 
+    /** Controls enemy spawn rate and positioning. */
     private EnemySpawner spawner;
+
+    /**
+     * The enemy closest to the player this frame.  Recomputed in
+     * {@link #update(double)} and read by auto-targeting weapons like
+     * {@link entity.weapon.Blue}.
+     */
     private Enemy closestTarget;
 
-
+    /**
+     * Holds the three items offered at the level-up screen, keyed by
+     * {@code "choice0"}, {@code "choice1"}, {@code "choice2"}.
+     */
     private final HashMap<String, GameObject> levelUpChoice = new HashMap<>();
+
+    /**
+     * Holds the type string ({@code "weapon"}, {@code "accessory"}, or
+     * {@code "upgrade"}) for each choice, keyed by {@code "choice0Type"} etc.
+     */
     private final HashMap<String, String> levelUpChoiceType = new HashMap<>();
+
+    /** {@code true} if at least one valid choice was generated for the level-up screen. */
     private boolean haveChoice;
 
+    /** When {@code true}, the game loop automatically uses all usable backpack items. */
     private boolean autoUseItem;
 
-    // InGameStat
+    // --- In-game derived stats modified by accessories ----------------------
+
+    /** Seconds the character has been dead (triggers game-over after 3 s). */
     private double timeSinceDead;
+
+    /** Multiplier applied to all experience gains (boosted by Growth accessory). */
     private double xPMultiplier;
+
+    /** Flat damage reduction applied to incoming hits (not yet used in damage formula). */
     private double armor;
+
+    /** Multiplier on passive HP regeneration rate (not yet used). */
     private double hpRecoveryMultiplier;
+
+    /** Luck value; multiplies chest / drop roll thresholds (not yet used). */
     private double luck;
+
+    /** {@code true} once the SubaruShirt one-shot revival has triggered this run. */
     private boolean revived;
 
+    /**
+     * Constructs and fully initialises a {@code GameManager} ready for use.
+     *
+     * <p>Master lists for characters, weapons, accessories, items, and exp orbs
+     * are populated here.  The {@link EnemySpawner} is created and the first
+     * BGM track is loaded into the {@link utils.SoundManager}.
+     *
+     * <p>The game starts in {@link GameState#MAIN_MENU}; call
+     * {@link #startGame()} after the player has selected a character to begin
+     * a run.
+     */
     public GameManager() {
         this.currentState = GameState.MAIN_MENU;
         this.inputManager = new InputManager();
@@ -113,7 +243,15 @@ public class GameManager {
         this.spawner = new EnemySpawner(this);
     }
 
-    public void resetGame(){
+    /**
+     * Tears down all runtime state and returns the game to the main menu.
+     *
+     * <p>All lists are cleared, weapon / accessory / item slots are reset,
+     * the character reference is nulled, and the scene is switched back to
+     * {@link GameState#MAIN_MENU}.  Called when the player quits mid-run or
+     * after the game-over screen.
+     */
+    public void resetGame() {
         backpack = new Item[36];
         weaponList = new Weapon[6];
         accessoryList = new Accessory[6];
@@ -139,7 +277,14 @@ public class GameManager {
         this.setCurrentState(GameState.MAIN_MENU);
         SceneManager.switchToMenu();
     }
-    public void startGame(){
+    /**
+     * Begins a new run with the currently selected character.
+     *
+     * <p>Sets the character's spawn position, starts the BGM, loads the tile
+     * map into {@link CollisionChecker}, initialises experience and timers,
+     * places starter weapons, and transitions to {@link GameState#PLAYING}.
+     */
+    public void startGame() {
         character.setMapX(1920*2);
         character.setMapY(1440*2);
         SoundManager.getInstance().startBGM("BGM1");
@@ -187,6 +332,32 @@ public class GameManager {
 
     }
 
+    /**
+     * Main simulation step — called every frame by the game loop.
+     *
+     * <p>Only executes when the state is {@link GameState#PLAYING}.
+     * Responsibilities in order:
+     * <ol>
+     *   <li>Advance game timer and call the enemy spawner.</li>
+     *   <li>Update the character (movement, i-frames, passive regen) or
+     *       advance the death timer.</li>
+     *   <li>Check SubaruShirt one-shot revival; trigger game-over after 3 s.</li>
+     *   <li>Update enemies: remove dead ones (possibly spawning exp/drops/chests),
+     *       deal contact damage, find the closest target for auto-aim weapons.</li>
+     *   <li>Proc all equipped accessories.</li>
+     *   <li>Activate equipped weapons and auto-use backpack items.</li>
+     *   <li>Tick active weapon effects; remove expired ones.</li>
+     *   <li>Tick active item effects; remove expired ones.</li>
+     *   <li>Process exp-orb collection and item pickup.</li>
+     *   <li>Process chest pickup triggers.</li>
+     *   <li>Resolve enemy-to-enemy push collisions (sweep-and-prune).</li>
+     *   <li>Update VFX (ground effects, floating texts, screen effects).</li>
+     *   <li>Check for level-up; if reached, pick random choices and show UI.</li>
+     *   <li>Update the HUD (clock, level bar, weapon cooldown overlays).</li>
+     * </ol>
+     *
+     * @param accumulateDeltaTime seconds elapsed since the previous frame
+     */
     public void update(double accumulateDeltaTime) {
 
         if (currentState != GameState.PLAYING) return;
@@ -377,6 +548,15 @@ public class GameManager {
         SceneManager.updateLevelBar(currentExperience,ExperienceForNextLevel);
         SceneManager.tickWeaponCooldowns(weaponList);
     }
+    /**
+     * Resolves overlapping enemies using a sweep-and-prune broad-phase followed
+     * by per-pair AABB overlap resolution.
+     *
+     * <p>Enemies are sorted by X coordinate so the inner loop can break early
+     * when the next enemy's left edge exceeds the current enemy's right edge.
+     * Overlapping pairs are pushed apart along the axis of least penetration
+     * with a soft smoothing factor (0.2) to avoid sudden "teleporting".
+     */
     private void handleEnemyCollisions() {
         inGameEnemyList.sort(Comparator.comparingDouble(Enemy::getMapX));
 
@@ -743,7 +923,19 @@ public class GameManager {
 
     }
 
-    public void putLevelUpChoice(String choice){
+    /**
+     * Applies the player's level-up selection.
+     *
+     * <p>If the chosen object is a {@link entity.weapon.Weapon}:
+     * if the player already has it equipped it is upgraded; otherwise it is
+     * placed in the first empty weapon slot.  If it is an
+     * {@link entity.accessory.Accessory}, the same logic applies to the
+     * accessory slots.  All accessories' {@code procEffect()} is called after
+     * placement to apply any immediate bonuses.
+     *
+     * @param choice one of {@code "choice0"}, {@code "choice1"}, {@code "choice2"}
+     */
+    public void putLevelUpChoice(String choice) {
         GameObject object = levelUpChoice.get(choice);
         boolean added = false;
         if(object instanceof Weapon weapon){
@@ -803,7 +995,17 @@ public class GameManager {
         }
     }
 
-    public void putItemInBackpack(Item object){
+    /**
+     * Adds an item to the player's backpack.
+     *
+     * <p>If the backpack already contains an item with the same name, its
+     * {@link entity.item.Item#setAmount(int) amount} is incremented.  Otherwise
+     * the item is placed in the first {@code null} slot.  The HUD is updated
+     * after every change.
+     *
+     * @param object the item to add (must not be {@code null})
+     */
+    public void putItemInBackpack(Item object) {
         boolean added = false;
         for(Item item : backpack){
             if(item != null && object.getName().equals(item.getName())){
@@ -824,16 +1026,42 @@ public class GameManager {
         }
     }
 
-    public boolean isCloseEnoughToRender(double mapX,double mapY){
+    /**
+     * Returns {@code true} if a world-space position falls within the visible
+     * screen area plus a one-tile (96 px) margin to avoid pop-in artefacts.
+     *
+     * @param mapX world X coordinate to test
+     * @param mapY world Y coordinate to test
+     * @return {@code true} if the position is within the extended viewport
+     */
+    public boolean isCloseEnoughToRender(double mapX, double mapY) {
         return  mapX > character.getMapX()-960-96 &&
                 mapX < character.getMapX()+960+96 &&
                 mapY > character.getMapY()-540-96 &&
                 mapY < character.getMapY()+540+96;
     }
-    public double getScreenX(double mapX){
+    /**
+     * Converts a world X coordinate to a screen X coordinate.
+     *
+     * <p>The character is always drawn at screen X = 960 (horizontal centre of
+     * a 1920 px canvas), so this subtracts the character's world X and adds 960.
+     *
+     * @param mapX world-space X to convert
+     * @return screen-space X in pixels
+     */
+    public double getScreenX(double mapX) {
         return mapX - character.getMapX() + 960;
     }
-    public double getScreenY(double mapY){
+    /**
+     * Converts a world Y coordinate to a screen Y coordinate.
+     *
+     * <p>The character is always drawn at screen Y = 540 (vertical centre of
+     * a 1080 px canvas), so this subtracts the character's world Y and adds 540.
+     *
+     * @param mapY world-space Y to convert
+     * @return screen-space Y in pixels
+     */
+    public double getScreenY(double mapY) {
         return mapY - character.getMapY() + 540;
     }
 
@@ -920,7 +1148,14 @@ public class GameManager {
     public HashMap<String,String>  getLevelUpChoiceType(){
         return levelUpChoiceType;
     }
-    public void increaseGrowth(double multiplier){
+    /**
+     * Multiplies the XP gain multiplier by the given factor.
+     *
+     * <p>Called by Growth-type accessories to make the player level up faster.
+     *
+     * @param multiplier the factor to apply (e.g. {@code 1.1} for +10 % XP)
+     */
+    public void increaseGrowth(double multiplier) {
         xPMultiplier*=multiplier;
     }
 }

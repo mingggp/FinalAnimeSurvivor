@@ -7,10 +7,20 @@ import javafx.scene.image.Image;
 
 import java.util.HashMap;
 
-public class Blindfold extends Accessory{
+/**
+ * Accessory — Gojo's Blindfold.
+ *
+ * <p>Multiplies the player's item-magnet radius by 1.3 per upgrade level.
+ * The multiplier is applied once per level-up (not every frame), tracked by
+ * {@link #amountOfTimeMagnetRadiusGotMultiply} so the boost is only applied
+ * the exact number of times the accessory has been upgraded.
+ */
+public class Blindfold extends Accessory {
 
-    //magnet radius*1.3
+    /** Game manager — provides access to the character's magnet radius. */
     private final GameManager gameManager;
+
+    /** Number of ×1.3 multiplications already applied to the magnet radius. */
     private int amountOfTimeMagnetRadiusGotMultiply;
 
     public Blindfold(GameManager gameManager){

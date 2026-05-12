@@ -10,11 +10,29 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import utils.SceneManager;
 
-public class Soda extends Item implements Usable, Droppable , Updatable {
+/**
+ * Item — Soda.
+ *
+ * <p>A consumable healing item that restores 1 000 HP when used.  Soda is
+ * subject to a 3-second per-item cooldown (tracked by {@link #usageTime}
+ * against the game timer) to prevent instant full-healing from a stack.
+ * Only usable while the character's HP is below maximum.
+ *
+ * <p>Implements {@link Droppable} so it can appear on the ground after
+ * an enemy dies, and moves toward the player when tagged by a magnet accessory.
+ */
+public class Soda extends Item implements Usable, Droppable, Updatable {
 
+    /** Game manager — provides character HP, magnet radius, and game timer. */
     private GameManager gameManager;
+
+    /** Game-timer value at the last successful use (used to enforce cooldown). */
     private double usageTime;
+
+    /** Minimum seconds between uses of the same Soda stack. */
     private double cooldown;
+
+    /** Axis-aligned bounding box used for pickup-collision detection on the map. */
     private BoundingBox itemHitBox;
 
     public Soda(GameManager gameManager){

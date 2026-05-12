@@ -16,16 +16,43 @@ import javafx.scene.paint.Color;
 
 import java.util.Objects;
 
-public class Infinity extends Weapon implements Evolvable , DamageIncreasable, SizeIncreasable {
+/**
+ * Weapon — Infinity / Mugen (Gojo's starting weapon).
+ *
+ * <p>Projects a persistent circular field centred on the player that deals
+ * damage to any enemy overlapping its radius every {@link #hitInterval} seconds.
+ * The field has no cooldown (always active) and never expires.
+ *
+ * <p>Can evolve into {@link MaximumOutputInfinity} when the player has
+ * {@link entity.accessory.SixEye} equipped and Infinity is at max level.
+ */
+public class Infinity extends Weapon implements Evolvable, DamageIncreasable, SizeIncreasable {
 
+    /** Game manager — provides player position and enemy list. */
     private final GameManager gameManager;
+
+    /** Animated infinity-ring sprite. */
     private final Image sprite;
+
+    /** Radius of the damage field in pixels; grows with upgrades and SizeIncreasable accessories. */
     private double radius;
+
+    /** Damage dealt to enemies per hit interval. */
     private double damage;
+
+    /** AABB hitbox centred on the player; updated each frame. */
     private BoundingBox hitbox;
+
+    /** Lifespan in seconds (very large — effectively permanent). */
     private double duration;
+
+    /** Minimum seconds between damage ticks. */
     private double hitInterval;
+
+    /** Accumulator for the hit-interval timer. */
     private double timeSinceLastHit;
+
+    /** Animation frame counter for the rotating sprite. */
     private int spriteCounter;
 
 

@@ -8,11 +8,22 @@ import javafx.scene.image.Image;
 
 import java.util.HashMap;
 
-public class KeyPad extends Accessory{
+/**
+ * Accessory — Wooting KeyPad.
+ *
+ * <p>Increases the active duration of all {@link DurationIncreasable} weapons
+ * by +10 % per upgrade level (multiplicative; ×1.1 per level, up to ×1.61 at
+ * level 5).  Uses the same incremental tracking pattern as {@link SixEye}.
+ */
+public class KeyPad extends Accessory {
 
-    //duration
+    /** Game manager — provides access to the equipped weapon slots. */
     private final GameManager gameManager;
-    protected HashMap<Weapon,Integer> weaponTrackingHashMap;
+
+    /**
+     * Tracks the accessory level at which each weapon last received a duration buff.
+     */
+    protected HashMap<Weapon, Integer> weaponTrackingHashMap;
 
     public KeyPad(GameManager gameManager){
         super("Wooting",5);
