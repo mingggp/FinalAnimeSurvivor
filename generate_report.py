@@ -304,6 +304,7 @@ add_table_row(tbl5, ["Reversal Red", "กระสุน", "ยิงกระ�
 add_table_row(tbl5, ["Cleave", "ฟันระยะประชิด", "ฟันศัตรูที่ใกล้ที่สุดอยู่ตลอดเวลา"], size=14)
 add_table_row(tbl5, ["Infinity (Mugen)", "Aura รอบตัว", "วงกลมดาเมจล้อมรอบผู้เล่นตลอดเวลา"], size=14)
 add_table_row(tbl5, ["Dismantle", "กระสุนเจาะ", "กระสุนทะลุผ่านศัตรูหลายตัวได้"], size=14)
+add_table_row(tbl5, ["Bible", "Orbital Books", "หนังสือโคจรรอบผู้เล่น ดาเมจศัตรูที่โดนวงโคจร"], size=14)
 add_paragraph()
 add_image_placeholder("[ภาพ Screenshot ระบบอาวุธและ Accessory Slot]")
 
@@ -497,28 +498,72 @@ add_body(
     "Test ทั้งหมดอยู่ใน src/test/java/ และรันด้วยคำสั่ง ./gradlew test"
 )
 
-add_heading2("6.1 CharacterTest")
+add_heading2("6.1 WeaponTest")
+add_body("ทดสอบ Logic ของระบบอาวุธและ Cooldown Progress Bar:")
+add_bullet("initialLevelIsOne — ตรวจสอบว่าระดับเริ่มต้นของอาวุธคือ 1")
+add_bullet("upgradeIncrementsLevelUntilMax — อัปเกรดจนถึง maxLevel แล้วได้ String \"Max\"")
+add_bullet("cooldownProgressIsZeroJustAfterFiring — ค่า getCooldownProgress() == 0.0 ทันทีหลังยิง")
+add_bullet("cooldownProgressIsOneWhenReady — getCooldownProgress() == 1.0 เมื่อ Cooldown เต็ม")
+add_bullet("cooldownProgressClampsAboveOne — ค่าไม่เกิน 1.0 แม้ timeSinceUse > cooldown")
+add_bullet("cooldownProgressIsHalfWayThrough — getCooldownProgress() ≈ 0.5 ที่กึ่งกลาง")
+add_bullet("zeroCooldownWeaponAlwaysReady — อาวุธที่มี cooldown = 0 พร้อมยิงเสมอ")
+add_bullet("useAdvancesTimeSinceUse — use(dt) เพิ่มค่า timeSinceUse")
+add_bullet("cooldownChangesAffectProgress — เปลี่ยน cooldown กระทบ progress ทันที")
+
+add_heading2("6.2 AccessoryTest")
+add_body("ทดสอบ Logic ของระบบ Accessory:")
+add_bullet("initialLevelIsOne — ตรวจสอบว่าระดับเริ่มต้นของ Accessory คือ 1")
+add_bullet("upgradeIncrementsLevel — upgrade() เพิ่มค่า level ได้ถูกต้อง")
+add_bullet("upgradeCapsAtMaxLevel — อัปเกรดจนถึง maxLevel แล้วได้ String \"Max\"")
+add_bullet("procEffectIsCallable — procEffect() เรียกได้โดยไม่ Error")
+add_bullet("nameIsSetByConstructor — ชื่อที่ส่ง Constructor ถูกเก็บถูกต้อง")
+
+add_heading2("6.3 ItemTest")
+add_body("ทดสอบ Logic ของระบบ Item:")
+add_bullet("defaultAmountIsZero — ค่า amount เริ่มต้นที่ 0")
+add_bullet("setAmountStoresValue — setAmount() เก็บค่าได้ถูกต้อง")
+add_bullet("tagFlipsMagnetFlag — tag() เปลี่ยน taggedByMagnet เป็น true")
+add_bullet("nameIsSetByConstructor — ชื่อที่ส่ง Constructor ถูกเก็บถูกต้อง")
+
+add_heading2("6.4 CollisionCheckerTest")
+add_body("ทดสอบระบบตรวจสอบการชนด้วย Grid 3×3 ที่มีกำแพงล้อมรอบ:")
+add_bullet("wallStopsLeftwardMovement — กำแพงทางซ้ายหยุดการเคลื่อนที่ไปซ้าย")
+add_bullet("wallStopsRightwardMovement — กำแพงทางขวาหยุดการเคลื่อนที่ไปขวา")
+add_bullet("wallStopsUpwardMovement — กำแพงด้านบนหยุดการเคลื่อนที่ขึ้น")
+add_bullet("wallStopsDownwardMovement — กำแพงด้านล่างหยุดการเคลื่อนที่ลง")
+add_bullet("noOpWhenTilesNotInitialized — ไม่ Crash เมื่อยังไม่มี Tile Map ถูกโหลด")
+
+add_heading2("6.5 GameStateTest")
+add_body("ทดสอบ Enum GameState ที่ใช้ควบคุม State Machine ของเกม:")
+add_bullet("allRequiredStatesArePresent — ตรวจสอบว่ามี State ที่จำเป็น เช่น PLAYING, PAUSED, MAIN_MENU, DEATH ครบ")
+add_bullet("valuesAreUnique — ทุก State มี ordinal ไม่ซ้ำกัน")
+add_bullet("enumHasReasonableSize — มีอย่างน้อย 10 State (ครอบคลุมทุกโหมดของเกม)")
+
+add_heading2("6.6 CharacterTest")
 add_body("ทดสอบ Logic ของตัวละครผู้เล่น:")
-add_bullet("receiveDamage() — ตรวจสอบว่า HP ลดลงถูกต้องเมื่อรับดาเมจ")
-add_bullet("heal() — ตรวจสอบว่า HP ฟื้นฟูได้ถูกต้องและไม่เกิน maxHP")
-add_bullet("isDead() — ตรวจสอบว่าตัวละครตายเมื่อ HP ≤ 0")
-add_bullet("I-frame — ตรวจสอบว่าตัวละครไม่รับดาเมจซ้ำในช่วง I-frame (0.2 วินาที)")
+add_bullet("testInitialState — ตรวจสอบค่าเริ่มต้นของตัวละคร เช่น HP, Speed")
+add_bullet("testReceiveDamage — ตรวจสอบว่า HP ลดลงถูกต้องเมื่อรับดาเมจ")
+add_bullet("testHeal — ตรวจสอบว่า HP ฟื้นฟูได้ถูกต้องและไม่เกิน maxHP")
+add_bullet("testIsDead — ตรวจสอบว่าตัวละครตายเมื่อ HP ≤ 0")
 
-add_heading2("6.2 EnemyTest")
+add_heading2("6.7 EnemyTest")
 add_body("ทดสอบ Logic ของศัตรู:")
-add_bullet("receiveDamage() — ตรวจสอบว่า HP ศัตรูลดลงถูกต้อง")
-add_bullet("การคำนวณทิศทางเคลื่อนที่ — ตรวจสอบว่าศัตรูเคลื่อนที่เข้าหาผู้เล่นถูกทิศ")
+add_bullet("testInitialState — ตรวจสอบค่าเริ่มต้นของศัตรู")
+add_bullet("testTakeDamage — ตรวจสอบว่า HP ศัตรูลดลงถูกต้อง")
+add_bullet("testMovementDirection — ตรวจสอบว่าศัตรูเคลื่อนที่เข้าหาผู้เล่นถูกทิศ")
 
-add_heading2("6.3 ChestTest")
-add_body("ทดสอบการสร้าง Chest Object ว่า Initialize ถูกต้อง")
+add_heading2("6.8 ChestTest")
+add_body("ทดสอบการสร้าง Chest Object:")
+add_bullet("testChestCreation — ตรวจสอบว่า Chest Initialize ถูกต้อง")
 
-add_heading2("6.4 ExpOrbTest")
-add_body("ทดสอบการสร้าง ExpOrb Object ว่า Initialize ถูกต้อง รวมถึงค่า XP Amount")
+add_heading2("6.9 ExpOrbTest")
+add_body("ทดสอบการสร้าง ExpOrb Object:")
+add_bullet("testInitialState — ตรวจสอบค่า XP Amount และ State เริ่มต้น")
 
-add_heading2("6.5 InputManagerTest")
+add_heading2("6.10 InputManagerTest")
 add_body("ทดสอบระบบรับ Input:")
-add_bullet("isKeyPressed() — ตรวจสอบว่าคีย์ที่กดถูกตรวจพบ")
-add_bullet("isKeyReleased() — ตรวจสอบว่าเมื่อปล่อยคีย์แล้วไม่ถูกนับว่ากดอยู่")
+add_bullet("testAddAndRemoveKey — ตรวจสอบว่า addKey/removeKey ทำงานถูกต้อง")
+add_bullet("testMultipleKeys — ตรวจสอบการกดหลายปุ่มพร้อมกัน")
 
 add_image_placeholder("[ภาพ Screenshot ผลการรัน JUnit Test (./gradlew test)]")
 add_paragraph()
@@ -533,44 +578,71 @@ doc.add_page_break()
 add_heading1("7. ปัญหาและข้อบกพร่องที่พบ")
 add_body("ในระหว่างการพัฒนาพบปัญหาและข้อบกพร่องดังต่อไปนี้:")
 
-tbl_bug = doc.add_table(rows=1, cols=3)
+tbl_bug = doc.add_table(rows=1, cols=4)
 tbl_bug.style = 'Table Grid'
-add_table_row(tbl_bug, ["#", "ส่วนที่เกิดปัญหา", "รายละเอียด"], bold=True, size=14, bg_color="FFD966")
+add_table_row(tbl_bug, ["#", "ส่วนที่เกิดปัญหา", "รายละเอียด", "สถานะ"], bold=True, size=14, bg_color="FFD966")
 
 bugs = [
     ("1", "Sound (SFX)",
      "SoundManager.playSFX() ใช้ new File(path) ซึ่งไม่รองรับ Resource ภายใน JAR "
-     "ทำให้เอฟเฟกต์เสียงไม่ทำงานเมื่อรันจาก JAR File"),
+     "ทำให้เอฟเฟกต์เสียงไม่ทำงานเมื่อรันจาก JAR File "
+     "แก้ไขโดยเปลี่ยนเป็น getClass().getResource(path).toExternalForm()",
+     "แก้ไขแล้ว"),
     ("2", "UI — Cooldown Bar",
      "ไม่มี Visual Cooldown Bar แสดงสถานะ Cooldown ของอาวุธใน HUD "
-     "WeaponSlot แสดงเพียง Level Number เท่านั้น"),
+     "WeaponSlot แสดงเพียง Level Number เท่านั้น "
+     "แก้ไขโดยเพิ่ม getCooldownProgress() ใน Weapon และ Rectangle Overlay ใน WeaponSlot",
+     "แก้ไขแล้ว"),
     ("3", "Shrine Icon",
      "มีไฟล์ Sprite ของ Shrine หลายเวอร์ชันใน Resources (shrine.png, SHRINE4.png, 140x140shrine.png) "
-     "ภาพที่แสดงในเกมอาจไม่ตรงกับที่ตั้งใจ"),
+     "ภาพที่แสดงในเกมอาจไม่ตรงกับที่ตั้งใจ",
+     "ยังไม่แก้ไข"),
     ("4", "Soda (ไอเทม)",
      "เงื่อนไข use() ของ Soda บังคับให้ใช้ได้เฉพาะเมื่อ HP < maxHP เท่านั้น "
-     "ทำให้ไม่สามารถดื่มล่วงหน้าเมื่อเลือด HP เต็มได้"),
-    ("5", "JAR Packaging",
-     "ปัญหา SFX Path ทำให้เสียงผลกระทบไม่ทำงานในเวอร์ชัน JAR "
-     "ควรใช้ getClass().getResourceAsStream() แทน new File()"),
-    ("6", "Map",
+     "ทำให้ไม่สามารถดื่มล่วงหน้าเมื่อเลือด HP เต็มได้",
+     "ยังไม่แก้ไข"),
+    ("5", "Map",
      "มีแผนที่เพียง 1 แผ่น (map1.txt) ที่เป็นสนามเล่นสี่เหลี่ยมธรรมดา "
-     "ยังไม่มีความหลากหลายของ Biome หรือ Layout"),
-    ("7", "NullPointerException",
+     "ยังไม่มีความหลากหลายของ Biome หรือ Layout",
+     "ยังไม่แก้ไข"),
+    ("6", "NullPointerException",
      "getClosestTarget() ใน GameManager อาจ Return null เมื่อไม่มีศัตรู "
-     "แต่อาวุธ Blue และ Red ไม่มีการตรวจสอบ null ก่อนใช้งาน อาจ Crash ได้"),
-    ("8", "SixEye Accessory",
+     "แต่อาวุธ Blue และ Red ไม่มีการตรวจสอบ null ก่อนใช้งาน อาจ Crash ได้ "
+     "แก้ไขโดยเพิ่ม null check ก่อนเข้าถึงข้อมูลของ closestTarget",
+     "แก้ไขแล้ว"),
+    ("7", "SixEye Accessory",
      "procEffect() ใช้ break แทน continue เมื่อพบ weaponList slot ที่เป็น null "
-     "ทำให้หยุดตรวจสอบ Slot ที่เหลือ อาวุธใน Slot ถัด ๆ ไปจะไม่ได้รับ Size Buff"),
-    ("9", "Bible Weapon",
-     "Class Bible มีอยู่ในโปรเจกต์แต่ยังไม่ได้ Implement พฤติกรรมการโจมตี (Placeholder)"),
-    ("10", "BGM startBGM()",
+     "ทำให้หยุดตรวจสอบ Slot ที่เหลือ อาวุธใน Slot ถัด ๆ ไปจะไม่ได้รับ Size Buff "
+     "แก้ไขโดยเปลี่ยน break เป็น continue",
+     "แก้ไขแล้ว"),
+    ("8", "Bible Weapon",
+     "Class Bible มีอยู่ในโปรเจกต์แต่ยังไม่ได้ Implement พฤติกรรมการโจมตี (Placeholder) "
+     "แก้ไขโดย Implement ระบบ Orbital Books ที่โคจรรอบผู้เล่นและดาเมจศัตรูที่โดน",
+     "แก้ไขแล้ว"),
+    ("9", "BGM startBGM()",
      "Method startBGM(String songName) ไม่ได้ใช้ Parameter songName "
-     "แต่เล่น Media ที่ loadMediaPlayer() โหลดไว้ล่าสุดเสมอ"),
+     "แต่เล่น Media ที่ loadMediaPlayer() โหลดไว้ล่าสุดเสมอ "
+     "แก้ไขโดยให้ startBGM() เรียก loadMediaPlayer(songName) ก่อนเล่น",
+     "แก้ไขแล้ว"),
 ]
 
 for bug in bugs:
-    add_table_row(tbl_bug, list(bug), size=13)
+    status = bug[3]
+    row = tbl_bug.add_row()
+    for i, text in enumerate(bug):
+        cell = row.cells[i]
+        cell.text = ""
+        run = cell.paragraphs[0].add_run(text)
+        set_font(run, size=13)
+    # Color the status cell
+    status_cell = row.cells[3]
+    tc = status_cell._tc
+    tcPr = tc.get_or_add_tcPr()
+    shd = OxmlElement('w:shd')
+    shd.set(qn('w:val'),   'clear')
+    shd.set(qn('w:color'), 'auto')
+    shd.set(qn('w:fill'),  'C6EFCE' if status == 'แก้ไขแล้ว' else 'FFEB9C')
+    tcPr.append(shd)
 add_paragraph()
 
 doc.add_page_break()
@@ -583,21 +655,18 @@ add_heading1("8. สรุปและข้อเสนอแนะ")
 add_heading2("8.1 สรุปผลการพัฒนา")
 add_body(
     "โปรแกรม Final Anime Survivor ได้พัฒนาเกมแนว Survivor ที่มีความซับซ้อนสูง "
-    "ประกอบด้วยระบบอาวุธ 6 ชนิดพร้อม Evolved Form, Accessory 6 ชนิด, ระบบ Level Up, "
+    "ประกอบด้วยระบบอาวุธ 7 ชนิดพร้อม Evolved Form, Accessory 6 ชนิด, ระบบ Level Up, "
     "Chest, Backpack, Tile Map, Collision Detection และ VFX "
     "โครงสร้างโปรแกรมออกแบบตามหลัก OOP โดยใช้ Inheritance, Interface, Polymorphism "
     "และ Encapsulation อย่างครบถ้วนและสมเหตุสมผล"
 )
 
 add_heading2("8.2 สิ่งที่ควรพัฒนาเพิ่มเติม")
-add_bullet("แก้ไข SFX Path ให้รองรับ JAR Resource อย่างถูกต้อง")
-add_bullet("เพิ่ม Visual Cooldown Bar บน HUD สำหรับแต่ละอาวุธ")
-add_bullet("เพิ่ม Map หลายแบบและ Enemy หลากหลายกว่านี้")
-add_bullet("Implement Bible Weapon ให้ครบ")
-add_bullet("แก้ SixEye.procEffect() จาก break เป็น continue")
-add_bullet("เพิ่ม Null Check ในอาวุธ Blue และ Red")
-add_bullet("เพิ่มระบบ Save/Load Progress")
-add_bullet("เพิ่ม Achievement และ Collection System")
+add_bullet("เพิ่ม Map หลายแบบและ Enemy หลากหลายกว่านี้ เพื่อเพิ่มความหลากหลายในการเล่น")
+add_bullet("เพิ่มระบบ Save/Load Progress ให้ผู้เล่นสามารถเล่นต่อจากเดิมได้")
+add_bullet("พัฒนา Achievement และ Collection System ให้สมบูรณ์ยิ่งขึ้น")
+add_bullet("แก้ไข Shrine Sprite ให้แสดงภาพที่ถูกต้องและลบไฟล์ Duplicate ออก")
+add_bullet("ปรับเงื่อนไขการใช้ Soda ให้ใช้ได้แม้ HP เต็ม เพื่อความสะดวกของผู้เล่น")
 
 add_paragraph()
 add_paragraph(
