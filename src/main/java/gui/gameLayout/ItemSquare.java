@@ -10,15 +10,23 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class ItemSquare extends Pane {
 
+    private static final double SQUARE_SIZE = 50;
     private boolean isDrawn;
     private Color baseColor;
     private int slot;
     private Item item;
     private final Label amountOrLevel = new Label();
     private final GameManager gameManager;
+    /**
+     * Translucent overlay drawn from the bottom up while the weapon is on
+     * cooldown. Height shrinks toward 0 as the cooldown completes.
+     */
+    private final Rectangle cooldownOverlay = new Rectangle(SQUARE_SIZE, 0);
+    private boolean cooldownVisible = false;
 
     //for weapon and accessory
     public ItemSquare(GameManager gameManager) {
@@ -33,6 +41,10 @@ public class ItemSquare extends Pane {
         amountOrLevel.setTranslateX(3);
         amountOrLevel.setTranslateY(-2);
         amountOrLevel.setStyle("-fx-text-fill: white;  -fx-font-size :20px; -fx-effect: dropshadow(three-pass-box, black, 2, 1.0, 0, 0);" );
+        cooldownOverlay.setFill(Color.rgb(0, 0, 0, 0.55));
+        cooldownOverlay.setMouseTransparent(true);
+        cooldownOverlay.setVisible(false);
+        this.getChildren().add(cooldownOverlay);
         this.getChildren().add(amountOrLevel);
 
     }
@@ -58,6 +70,9 @@ public class ItemSquare extends Pane {
     public void initializeCellColor() {
         this.item = null;
         amountOrLevel.setText("");
+        cooldownVisible = false;
+        cooldownOverlay.setVisible(false);
+        cooldownOverlay.setHeight(0);
         //this.getChildren().clear();
         BackgroundFill bgFill = new BackgroundFill(this.getBaseColor(), CornerRadii.EMPTY, Insets.EMPTY);
         BackgroundFill[] bgFillA = {bgFill};
@@ -87,6 +102,27 @@ public class ItemSquare extends Pane {
         BackgroundImage[] bgImgA = {bgImg};
         this.setBackground(new Background(bgFillA,bgImgA));
         amountOrLevel.setText(weapon.getLevel());
+        cooldownVisible = true;
+        cooldownOverlay.setVisible(true);
+        applyCooldownProgress(weapon.getCooldownProgress());
+    }
+
+    /**
+     * Per-frame cooldown bar update. Called by the panel from the game loop.
+     * No-op when this square is not currently displaying a weapon.
+     */
+    public void tickCooldown(Weapon weapon){
+        if (!cooldownVisible || weapon == null) return;
+        applyCooldownProgress(weapon.getCooldownProgress());
+    }
+
+    private void applyCooldownProgress(double progress){
+        if (progress < 0) progress = 0;
+        if (progress > 1) progress = 1;
+        double remainingFraction = 1.0 - progress;
+        double height = SQUARE_SIZE * remainingFraction;
+        cooldownOverlay.setHeight(height);
+        cooldownOverlay.setY(SQUARE_SIZE - height);
     }
     public void updateAccessorySquare(Accessory accessory){
         BackgroundFill bgFill = new BackgroundFill(this.getBaseColor(), CornerRadii.EMPTY, Insets.EMPTY);

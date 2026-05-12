@@ -16,7 +16,6 @@ public class MaximumRed extends Weapon implements CooldownDecreasable, DamageInc
 
     private final GameManager gameManager;
     private final Image sprite;
-    private double timeSinceUse;
     private double animationTime;
     private double damage;
     private BoundingBox hitbox;

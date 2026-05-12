@@ -21,7 +21,6 @@ public class Standard extends Weapon implements Evolvable , DamageIncreasable,Si
     private final GameManager gameManager;
     private final Image cursor;
     private final Image trail;
-    private double timeSinceUse;
     private double width;
     private double height;
     private double damage;

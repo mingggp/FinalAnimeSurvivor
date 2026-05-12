@@ -19,7 +19,6 @@ import java.util.ArrayList;
 public class MaximumBlue extends Weapon implements SizeIncreasable , DurationIncreasable , CooldownDecreasable, DamageIncreasable {
     private final GameManager gameManager;
     private final Image sprite;
-    private double timeSinceUse;
     private double animationTime;
     private double damage;
     private double radius;

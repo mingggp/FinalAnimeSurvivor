@@ -17,7 +17,6 @@ public class Blue extends Weapon implements Evolvable, DamageIncreasable, SizeIn
 
     private final GameManager gameManager;
     private final Image sprite;
-    private double timeSinceUse;
     private double animationTime;
     private double damage;
     private double radius;

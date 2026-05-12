@@ -21,7 +21,6 @@ import java.util.Objects;
 public class Dismantle extends Weapon implements Evolvable, DamageIncreasable, SizeIncreasable , CooldownDecreasable {
 
     private GameManager gameManager;
-    private double timeSinceUse;
     private Image sprite;
     private ArrayList<Enemy> hittedEnemyList;
     private int speed;

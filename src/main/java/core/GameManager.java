@@ -375,6 +375,7 @@ public class GameManager {
 
         SceneManager.updateClock(gameTimer,level);
         SceneManager.updateLevelBar(currentExperience,ExperienceForNextLevel);
+        SceneManager.tickWeaponCooldowns(weaponList);
     }
     private void handleEnemyCollisions() {
         inGameEnemyList.sort(Comparator.comparingDouble(Enemy::getMapX));
@@ -469,7 +470,7 @@ public class GameManager {
         allWeaponList.add(new Red(this));
         allWeaponList.add(new Blue(this));
         allWeaponList.add(new Infinity(this));
-        //allWeaponList.add(new Bible(this));
+        allWeaponList.add(new Bible(this));
         allWeaponList.add(new Standard( this));
     }
     private void initializedAllAccessory(){

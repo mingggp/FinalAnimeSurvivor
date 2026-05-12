@@ -150,4 +150,7 @@ public class SceneManager {
     public static void updateWeaponAndAccessoryPanel(Weapon[] weaponList, Accessory[] accessoryList){
         weaponAndAccessoryPanel.updateWeaponAndAccessoryPanel(weaponList, accessoryList);
     }
+    public static void tickWeaponCooldowns(Weapon[] weaponList){
+        weaponAndAccessoryPanel.tickCooldowns(weaponList);
+    }
 }

@@ -17,7 +17,6 @@ public class MaximumCleave extends Weapon implements SizeIncreasable , CooldownD
 
     private final GameManager gameManager;
     private final Image sprite;
-    private double timeSinceUse;
     private double maxRange;
     private double range;
     private double damage;

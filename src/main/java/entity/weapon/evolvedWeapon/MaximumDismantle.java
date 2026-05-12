@@ -17,7 +17,6 @@ import java.util.ArrayList;
 public class MaximumDismantle extends Weapon implements SizeIncreasable, CooldownDecreasable, DamageIncreasable {
 
     private GameManager gameManager;
-    private double timeSinceUse;
     private Image sprite;
     private ArrayList<Enemy> hittedEnemyList;
     private int speed;

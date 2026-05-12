@@ -18,7 +18,6 @@ public class Lazer extends Weapon implements SizeIncreasable , DurationIncreasab
 
     private final GameManager gameManager;
     private final Image sprite;
-    private double timeSinceUse;
     private double width;
     private double height;
     private double damage;

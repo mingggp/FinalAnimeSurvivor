@@ -15,7 +15,6 @@ public class MaximumOutputInfinity extends Weapon implements SizeIncreasable, Da
 
     private final GameManager gameManager;
     private final Image sprite;
-    private double timeSinceUse;
     private double radius;
     private double damage;
     private BoundingBox hitbox;

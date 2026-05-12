@@ -36,4 +36,16 @@ public class WeaponAndAccessoryPanel extends GridPane {
             }
         }
     }
+
+    /**
+     * Lightweight per-frame refresh that only updates the cooldown overlay
+     * on weapon slots. Cheap to call from the game loop.
+     */
+    public void tickCooldowns(Weapon[] weaponList){
+        for(int i = 0; i < 6; i++){
+            if(weaponList[i] != null){
+                ((ItemSquare)this.getChildren().get(i)).tickCooldown(weaponList[i]);
+            }
+        }
+    }
 }

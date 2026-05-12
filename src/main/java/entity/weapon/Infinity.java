@@ -20,7 +20,6 @@ public class Infinity extends Weapon implements Evolvable , DamageIncreasable, S
 
     private final GameManager gameManager;
     private final Image sprite;
-    private double timeSinceUse;
     private double radius;
     private double damage;
     private BoundingBox hitbox;

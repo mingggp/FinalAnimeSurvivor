@@ -21,7 +21,6 @@ public class Red extends Weapon implements Evolvable, DamageIncreasable, SizeInc
 
     private final GameManager gameManager;
     private final Image sprite;
-    private double timeSinceUse;
     private double animationTime;
     private double damage;
     private double radius;

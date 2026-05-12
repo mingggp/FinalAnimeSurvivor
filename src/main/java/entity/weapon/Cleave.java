@@ -22,7 +22,6 @@ public class Cleave extends Weapon implements Evolvable , DamageIncreasable {
 
     private final GameManager gameManager;
     private final Image sprite;
-    private double timeSinceUse;
     private int size;
     private double damage;
     private double hitInterval;
