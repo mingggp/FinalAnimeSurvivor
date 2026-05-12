@@ -1,5 +1,7 @@
 package gui.gameLayout;
 
+import gui.SettingCanvas;
+import gui.SettingsSliderPanel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -38,13 +40,18 @@ public class InGameSettingPanel extends VBox {
         title.setFill(Color.web("#e94560"));
         title.setEffect(new DropShadow(14, Color.web("#e94560")));
 
-        VBox sliders = gui.SettingCanvas.buildPanel();
+        SettingsSliderPanel sliderPanel = SettingCanvas.buildPanel();
 
         Button backBtn = makeBtn("← Back");
         backBtn.setOnMouseClicked(e -> onBack.run());
 
-        this.getChildren().addAll(title, sliders, backBtn);
+        this.getChildren().addAll(title, sliderPanel, backBtn);
         this.setVisible(false);
+
+        // Refresh sliders from SoundManager each time this overlay is shown
+        visibleProperty().addListener((obs, o, n) -> {
+            if (n) sliderPanel.refresh();
+        });
     }
 
     private Button makeBtn(String label) {
