@@ -2,112 +2,95 @@ package gui;
 
 import core.GameManager;
 import core.GameState;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.Stop;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import utils.SceneManager;
 
 public class MenuCanvas extends VBox {
 
-    private Text gameTitleTemp;
-    private Button playButton;
-    private Button upgradeButton;
-    private Button settingButton;
-    private Button achievementButton;
-    private Button collectionButton;
-    private Button quitButton;
-    private GameManager gameManager;
+    private static final String BTN_NORMAL =
+        "-fx-background-color: #2c2c54;" +
+        "-fx-text-fill: #f5f5f5;" +
+        "-fx-font-size: 26px;" +
+        "-fx-font-weight: bold;" +
+        "-fx-background-radius: 10;" +
+        "-fx-border-color: #e94560;" +
+        "-fx-border-width: 2;" +
+        "-fx-border-radius: 10;" +
+        "-fx-cursor: hand;";
 
-    public MenuCanvas(GameManager gameManager){
+    private static final String BTN_HOVER =
+        "-fx-background-color: #e94560;" +
+        "-fx-text-fill: #ffffff;" +
+        "-fx-font-size: 26px;" +
+        "-fx-font-weight: bold;" +
+        "-fx-background-radius: 10;" +
+        "-fx-border-color: #e94560;" +
+        "-fx-border-width: 2;" +
+        "-fx-border-radius: 10;" +
+        "-fx-cursor: hand;";
+
+    private final GameManager gameManager;
+
+    public MenuCanvas(GameManager gameManager) {
         this.gameManager = gameManager;
+
+        LinearGradient bg = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
+            new Stop(0, Color.web("#0f0c29")),
+            new Stop(0.5, Color.web("#302b63")),
+            new Stop(1, Color.web("#24243e")));
+        this.setBackground(new Background(new BackgroundFill(bg, CornerRadii.EMPTY, Insets.EMPTY)));
         this.setAlignment(Pos.CENTER);
-        this.setPrefWidth(300);
         this.setSpacing(20);
-        this.initializeGameText();
-        this.initializePlayButton();
-        this.initializeUpgradeButton();
-        this.initializeSettingButton();
-        this.initializeAchievementButton();
-        this.initializeCollectionButton();
-        this.initializeQuitButton();
-        this.getChildren().add(gameTitleTemp);
-        this.getChildren().add(playButton);
-        //this.getChildren().add(upgradeButton);
-        this.getChildren().add(settingButton);
-        //this.getChildren().add(achievementButton);
-        //this.getChildren().add(collectionButton);
-        this.getChildren().add(quitButton);
+
+        Text title = new Text("ANIME SURVIVOR");
+        title.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 80));
+        title.setFill(Color.web("#e94560"));
+        DropShadow glow = new DropShadow(20, Color.web("#e94560"));
+        title.setEffect(glow);
+
+        Text subtitle = new Text("— Top-Down Survivor —");
+        subtitle.setFont(Font.font("Arial", FontWeight.NORMAL, 22));
+        subtitle.setFill(Color.web("#aaaacc"));
+
+        VBox titleBox = new VBox(6, title, subtitle);
+        titleBox.setAlignment(Pos.CENTER);
+        titleBox.setPadding(new Insets(0, 0, 30, 0));
+
+        Button playBtn    = makeButton("▶  Play");
+        Button settingBtn = makeButton("⚙  Settings");
+        Button quitBtn    = makeButton("✕  Quit");
+
+        playBtn.setOnMouseClicked(e -> {
+            SceneManager.switchToCharacterMenu();
+            gameManager.setCurrentState(GameState.CHARACTER_MENU);
+        });
+        settingBtn.setOnMouseClicked(e -> {
+            SceneManager.switchToSetting();
+            gameManager.setCurrentState(GameState.SETTINGS);
+        });
+        quitBtn.setOnMouseClicked(e -> System.exit(0));
+
+        this.getChildren().addAll(titleBox, playBtn, settingBtn, quitBtn);
     }
 
-    private void initializeGameText(){
-        this.gameTitleTemp = new Text();
-        this.gameTitleTemp.setText( "ANIME SURVIVOR");
-        this.gameTitleTemp.setStyle("-fx-font-size :70px;");
-    }
-    private void initializePlayButton(){
-        this.playButton = new Button();
-        this.playButton.setText("Play");
-        this.playButton.setPrefWidth(300);
-        this.playButton.setPrefHeight(75);
-        this.playButton.setOnMouseClicked( event -> playButtonHandler());
-    }
-    private void initializeUpgradeButton(){
-        this.upgradeButton = new Button();
-        this.upgradeButton.setText("Upgrade");
-        this.upgradeButton.setPrefWidth(300);
-        this.upgradeButton.setPrefHeight(75);
-        this.upgradeButton.setOnMouseClicked( event -> upgradeButtonHandler());
-    }
-    private void initializeSettingButton(){
-        this.settingButton = new Button();
-        this.settingButton.setText("Setting");
-        this.settingButton.setPrefWidth(300);
-        this.settingButton.setPrefHeight(75);
-        this.settingButton.setOnMouseClicked( event -> settingButtonHandler());
-    }
-    private void initializeAchievementButton(){
-        this.achievementButton = new Button();
-        this.achievementButton.setText("Achievement");
-        this.achievementButton.setPrefWidth(300);
-        this.achievementButton.setPrefHeight(75);
-        this.achievementButton.setOnMouseClicked( event -> achievementButtonHandler());
-    }
-    private void initializeCollectionButton(){
-        this.collectionButton = new Button();
-        this.collectionButton.setText("Collection");
-        this.collectionButton.setPrefWidth(300);
-        this.collectionButton.setPrefHeight(75);
-        this.collectionButton.setOnMouseClicked( event -> collectionButtonHandler());
-    }
-    private void initializeQuitButton(){
-        this.quitButton = new Button();
-        this.quitButton.setText("Quit");
-        this.quitButton.setPrefWidth(300);
-        this.quitButton.setPrefHeight(75);
-        this.quitButton.setOnMouseClicked( event -> quitButtonHandler());
-    }
-    private void playButtonHandler(){
-        SceneManager.switchToCharacterMenu();
-        gameManager.setCurrentState(GameState.CHARACTER_MENU);
-    }
-    private void upgradeButtonHandler(){
-        SceneManager.switchToUpgrade();
-        gameManager.setCurrentState(GameState.UPGRADE_MENU);
-    }
-    private void settingButtonHandler(){
-        SceneManager.switchToSetting();
-        gameManager.setCurrentState(GameState.SETTINGS);
-    }
-    private void achievementButtonHandler(){
-        SceneManager.switchToAchievement();
-        gameManager.setCurrentState(GameState.ACHIEVEMENT);
-    }
-    private void collectionButtonHandler(){
-        SceneManager.switchToCollection();
-        gameManager.setCurrentState(GameState.COLLECTION);
-    }
-    private void quitButtonHandler(){
-        System.exit(0);
+    private Button makeButton(String label) {
+        Button b = new Button(label);
+        b.setPrefWidth(340);
+        b.setPrefHeight(70);
+        b.setStyle(BTN_NORMAL);
+        b.setOnMouseEntered(e -> b.setStyle(BTN_HOVER));
+        b.setOnMouseExited(e -> b.setStyle(BTN_NORMAL));
+        return b;
     }
 }
