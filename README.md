@@ -85,19 +85,20 @@ java -jar FinalAnimeSurvivor.jar
 | Cleave | Melee | Always-on slash hitting the nearest enemy |
 | Infinity (Mugen) | Aura | Continuous damage circle surrounding the player |
 | Dismantle | Projectile | Piercing projectile passing through enemies |
+| Bible | Orbital books | Books orbit the player, damaging enemies they touch |
 
 ### Evolved / Ultimate Weapons
 
 Weapons can evolve when at max level and a **Chest** is collected:
 
-| Base Weapon | Evolved Form |
-|---|---|
-| OSU! Cursor | Lazer |
-| Lapse Blue | Maximum Blue |
-| Reversal Red | Maximum Red |
-| Cleave | Maximum Cleave |
-| Infinity | Maximum Output Infinity |
-| Dismantle | Maximum Dismantle |
+| Base Weapon | Evolved Form | Required Accessory |
+|---|---|---|
+| OSU! Cursor | Lazer | KeyPad |
+| Lapse Blue | Maximum Blue | GojoGlasses |
+| Reversal Red | Maximum Red | Blindfold |
+| Cleave | Maximum Cleave | SukunaCloak |
+| Infinity | Maximum Output Infinity | SixEye |
+| Dismantle | Maximum Dismantle | SukunaArm |
 
 ### Accessories
 
@@ -237,11 +238,16 @@ Located in `src/test/java/`:
 
 | Test Class | What It Tests |
 |---|---|
-| `CharacterTest` | Damage reception, healing, death state, I-frame immunity |
-| `EnemyTest` | Damage, movement direction calculation |
-| `ChestTest` | Chest initialization |
-| `ExpOrbTest` | Exp orb initialization |
-| `InputManagerTest` | Key press/release tracking |
+| `WeaponTest` | Level progression, `getCooldownProgress()` accuracy and edge cases |
+| `AccessoryTest` | Level init, upgrade capping, `procEffect()` callable, name storage |
+| `ItemTest` | Default amount, `setAmount()`, `tag()` magnet flag, name storage |
+| `CollisionCheckerTest` | 4-directional wall blocking, null-tile guard |
+| `GameStateTest` | Required states present, unique ordinals, enum size ≥ 10 |
+| `CharacterTest` | Initial state, damage reception, healing, death detection |
+| `EnemyTest` | Initial state, damage, movement direction toward player |
+| `ChestTest` | Chest object initialization |
+| `ExpOrbTest` | Exp orb initial state and XP amount |
+| `InputManagerTest` | Key add/remove, multiple simultaneous keys |
 
 Run all tests:
 
@@ -253,15 +259,14 @@ Run all tests:
 
 ## Known Issues & Bugs
 
-| # | Area | Description |
-|---|---|---|
-| 1 | Sound | `SoundManager.playSFX()` uses `new File(path)` — SFX will not play when running from a JAR (must use classpath resource) |
-| 2 | UI | No visual **cooldown bar** for weapons; the weapon slot only shows level number |
-| 3 | Shrine | Multiple shrine sprite variants exist in resources; the displayed sprite may not match intended artwork |
-| 4 | Soda | `use()` is blocked when HP is at maximum — prevents stacking heals proactively |
-| 5 | JAR | SFX path bug prevents audio effects in packaged JAR |
-| 6 | Map | Only one map is implemented; the tile set is minimal (grass + dirt only) |
-| 7 | Null crash | `getClosestTarget()` can return `null`; weapons (Blue, Red) do not null-check before using it |
-| 8 | SixEye | `procEffect()` uses `break` instead of `continue` — stops checking remaining weapon slots when a `null` slot is found mid-array |
-| 9 | Bible | Weapon class exists but has no implemented attack behavior (placeholder) |
-| 10 | BGM | `startBGM(String songName)` ignores its parameter and always plays the already-loaded media |
+| # | Area | Description | Status |
+|---|---|---|---|
+| 1 | Sound (SFX) | `SoundManager.playSFX()` used `new File(path)` — SFX did not play from a JAR. Fixed by switching to `getClass().getResource(path).toExternalForm()` | ✅ Fixed |
+| 2 | UI — Cooldown Bar | No visual cooldown bar; weapon slot showed only a level number. Fixed by adding `getCooldownProgress()` to `Weapon` and a `Rectangle` overlay in `WeaponSlot` | ✅ Fixed |
+| 3 | Shrine Icon | Multiple sprite variants in resources (`shrine.png`, `SHRINE4.png`, `140x140shrine.png`); displayed sprite may not match intended artwork | ⚠️ Pending |
+| 4 | Soda | `use()` is blocked when HP is at maximum — prevents pre-drinking | ⚠️ Pending |
+| 5 | Map | Only one map (`map1.txt`); minimal tile variety (grass + dirt) | ⚠️ Pending |
+| 6 | Null crash | `getClosestTarget()` could return `null`; Blue and Red did not null-check before accessing it. Fixed by adding null guards in both weapons | ✅ Fixed |
+| 7 | SixEye | `procEffect()` used `break` instead of `continue` on `null` weapon slots — skipped remaining slots. Fixed by changing `break` → `continue` | ✅ Fixed |
+| 8 | Bible | Weapon class existed but attack behavior was unimplemented. Fixed by implementing orbital-books mechanics with hit detection | ✅ Fixed |
+| 9 | BGM | `startBGM(String songName)` ignored its parameter and always replayed the last-loaded track. Fixed by calling `loadMediaPlayer(songName)` first | ✅ Fixed |
